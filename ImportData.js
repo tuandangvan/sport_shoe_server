@@ -1,8 +1,8 @@
 const express = require("express");
-const User = require("./src/models/UserModel");
-const users = require("./src/data/users");
-const Product = require("./src/models/ProductModel");
-const products = require("./src/data/Products");
+const User = require("./models/UserModel");
+const users = require("./data/users");
+const Product = require("./models/ProductModel");
+const products = require("./data/Products");
 const ImportData = express.Router();
 const asyncHandler = require("express-async-handler");
 
