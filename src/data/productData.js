@@ -1,4 +1,4 @@
-const products = [
+export const products = [
   {
     name: "Velcro Ballerinas For Girls  (Pink)",
     image: "/images/6.png",
@@ -7,7 +7,7 @@ const products = [
     price: 89,
     countInStock: 3,
     rating: 4,
-    numReviews: 4,
+    numReviews: 4
   },
   {
     name: "Velcro Sneakers For Boys & Girls  (Blue)",
@@ -17,7 +17,7 @@ const products = [
     price: 599,
     countInStock: 10,
     rating: 2,
-    numReviews: 2,
+    numReviews: 2
   },
   {
     name: "Sesame Street Unisex-Child ELMO Puppet Slipper",
@@ -27,7 +27,7 @@ const products = [
     price: 929,
     countInStock: 0,
     rating: 3.5,
-    numReviews: 3,
+    numReviews: 3
   },
   {
     name: "Lace Casual Boots For Boys & Girls  (Tan)",
@@ -37,7 +37,7 @@ const products = [
     price: 399,
     countInStock: 10,
     rating: 5,
-    numReviews: 9,
+    numReviews: 9
   },
   {
     name: "Lace Walking Shoes For Boys & Girls  (Pink)",
@@ -47,7 +47,7 @@ const products = [
     price: 49,
     countInStock: 7,
     rating: 2,
-    numReviews: 2,
+    numReviews: 2
   },
   {
     name: "Women Red Heels Sandal",
@@ -57,8 +57,6 @@ const products = [
     price: 29,
     countInStock: 0,
     rating: 0,
-    numReviews: 0,
-  },
+    numReviews: 0
+  }
 ];
-
-module.exports = products;

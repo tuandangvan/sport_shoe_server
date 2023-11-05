@@ -1,6 +1,7 @@
-const asyncHandler = require("express-async-handler");
-const Product = require("../src/models/ProductModel");
-const Category = require("../src/models/CategoryModel");
+import asyncHandler from "express-async-handler";
+import Product from "~/models/productModel";
+import Category from "~/models/categoryModel";
+
 // @desc    get all product
 // @route   GET /api/products/
 // @access  Public
@@ -11,8 +12,8 @@ const getAllProduct = asyncHandler(async (req, res) => {
     ? {
         name: {
           $regex: req.query.keyword,
-          $options: "i",
-        },
+          $options: "i"
+        }
       }
     : {};
   const products = await Product.find({ ...keyword, ...category });
@@ -30,8 +31,8 @@ const getAllProductByAdmin = asyncHandler(async (req, res) => {
     ? {
         name: {
           $regex: req.query.keyword,
-          $options: "i",
-        },
+          $options: "i"
+        }
       }
     : {};
   const count = await Product.countDocuments({ ...keyword });
@@ -84,7 +85,7 @@ const createProductByAdmin = asyncHandler(async (req, res) => {
       category: categoryFound.name,
       description,
       image,
-      countInStock,
+      countInStock
     });
     if (product) {
       const createProduct = await product.save();
@@ -162,7 +163,7 @@ const createProductReview = asyncHandler(async (req, res) => {
       rating: Number(rating),
       comment,
       user: req.user._id,
-      timestamps: true,
+      timestamps: true
     };
 
     product.reviews.push(review);
@@ -188,7 +189,7 @@ const filteredProducts = asyncHandler(async (req, res) => {
       if (key === "price") {
         findArgs[key] = {
           $gte: req.body.filters[key][0],
-          $lte: req.body.filters[key][1],
+          $lte: req.body.filters[key][1]
         };
       } else {
         findArgs[key] = req.body.filters[key];
@@ -201,12 +202,12 @@ const filteredProducts = asyncHandler(async (req, res) => {
     .exec((err, data) => {
       if (err) {
         return res.status(400).json({
-          error: "Products not found",
+          error: "Products not found"
         });
       }
       res.json({
         size: data.length,
-        data,
+        data
       });
     });
 });
@@ -215,14 +216,14 @@ const productListCategory = asyncHandler(async (req, res) => {
   Product.distinct("category", {}, (err, categories) => {
     if (err) {
       return res.status(404).json({
-        err: "Categories Not Found",
+        err: "Categories Not Found"
       });
     }
     res.json(categories);
   });
 });
 
-module.exports = {
+export const productController = {
   getAllProduct,
   getSingleProduct,
   createProductReview,
@@ -231,5 +232,5 @@ module.exports = {
   updateProductByAdmin,
   getAllProductByAdmin,
   productListCategory,
-  filteredProducts,
+  filteredProducts
 };

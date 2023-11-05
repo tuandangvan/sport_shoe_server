@@ -1,17 +1,24 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
+import { env } from "~/config/environment";
 
-const connectDatabase = async () => {
-  try {
-    const db = await mongoose.connect(process.env.MONGO_URL, {
-      dbName: "shop_shoes",
-      useUnifiedTopology: true,
-      useNewUrlParser: true,
-    });
-    console.log("Mongo successfully connected");
-  } catch (err) {
-    console.log(`Error: ${err.message}`);
-    process.exit(1);
-  }
+let chatDatabaseInstance = null;
+
+// Connect database
+export const CONNECT_DATABASE = async () => {
+  chatDatabaseInstance = await mongoose.connect(env.MONGODB_URI, {
+    dbName: env.MONGODB_DB_NAME,
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  });
 };
 
-module.exports = connectDatabase;
+export const GET_DATABASE = () => {
+  if (!chatDatabaseInstance)
+    throw new Error("Must connect to Database first !");
+  return chatDatabaseInstance;
+};
+
+// Đóng kết nối tới database khi cần
+export const CLOSE_DATABASE = async () => {
+  await chatDatabaseInstance.close();
+};

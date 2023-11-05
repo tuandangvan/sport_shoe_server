@@ -1,11 +1,11 @@
-const asyncHandler = require("express-async-handler");
-const Category = require("../src/models/CategoryModel");
-const slugify = require("slugify");
-const Product = require("../src/models/ProductModel");
+import asyncHandler from "express-async-handler";
+import Category from "~/models/categoryModel";
+import slugify from "slugify";
+import Product from "~/models/productModel";
+
 // ?@desc    ADMIN | GET ALL CATEGORIES WITHOUT SEARCH AND PAGINATION
 // ?@route   GET /api/categories/
 // ?@access  Private
-
 const getAllCategories = asyncHandler(async (req, res) => {
   const categories = await Category.find({}).populate("product");
 
@@ -15,12 +15,12 @@ const getAllCategories = asyncHandler(async (req, res) => {
   res.status(200).json(categories);
 });
 
-const createCategoriesByAdmin = asyncHandler(async (req, res) => {
+const createCategoriesByAdmin = asyncHandler(async (req, res, next) => {
   try {
     const { name, description } = req.body;
     const usedCategory = await Category.findOne({ name: name });
     if (usedCategory) {
-      return res.status(400).json({ message: "Category already exists" });
+      res.status(400).json({ message: "Category already exists" });
     }
 
     let categoryFields = {};
@@ -30,7 +30,8 @@ const createCategoriesByAdmin = asyncHandler(async (req, res) => {
     const newCategory = await new Category(categoryFields).save();
     res.json(newCategory);
   } catch (error) {
-    return res.status(400).json({ message: "Category couldn't be created" });
+    next(error);
+    // return res.status(400).json({ message: "Category couldn't be created" });
   }
 });
 const deleteCategoryByAdmin = asyncHandler(async (req, res) => {
@@ -72,10 +73,10 @@ const updateCategoryByAdmin = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = {
+export const categoryController = {
   getAllCategories,
   createCategoriesByAdmin,
   deleteCategoryByAdmin,
   getSingleCategoryByAdmin,
-  updateCategoryByAdmin,
+  updateCategoryByAdmin
 };

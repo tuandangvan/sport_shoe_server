@@ -1,8 +1,8 @@
-const nodemailer = require("nodemailer");
+import nodemailer from "nodemailer";
 
 // VERIFY EMAIL
 
-const Email = (options) => {
+export const Email = (options) => {
   let transporter = nodemailer.createTransport({
     service: process.env.EMAIL_SERVICE,
     type: process.env.SMTP,
@@ -10,11 +10,11 @@ const Email = (options) => {
     port: process.env.SMTP_PORT,
     auth: {
       user: process.env.EMAIL_USERNAME,
-      pass: process.env.EMAIL_PASSWORD,
+      pass: process.env.EMAIL_PASSWORD
     },
     tls: {
-      rejectUnauthorized: false,
-    },
+      rejectUnauthorized: false
+    }
   });
 
   transporter.sendMail(options, (err, info) => {
@@ -54,9 +54,7 @@ const EmailSender = ({ name, email, subject, message }) => {
           </div>
         </div>
       </div>
-        `,
+        `
   };
   Email(options);
 };
-
-module.exports = EmailSender;

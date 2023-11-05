@@ -1,5 +1,5 @@
-const asyncHandler = require("express-async-handler");
-const EmailSender = require("../middleware/Email");
+import asyncHandler from "express-async-handler";
+import EmailSender from "~/middleware/mailMiddleware";
 
 const sendContact = asyncHandler(async (req, res) => {
   try {
@@ -11,4 +11,4 @@ const sendContact = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = sendContact;
+export const contactController = { sendContact };

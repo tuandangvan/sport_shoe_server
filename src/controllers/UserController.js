@@ -1,6 +1,6 @@
-const asyncHandler = require("express-async-handler");
-const User = require("../src/models/UserModel");
-const generateToken = require("../utils/generateToken");
+import asyncHandler from "express-async-handler";
+import User from "~/models/userModel";
+import { generateToken } from "~/utils/generateToken";
 
 // @desc    Auth user & get a token
 // @route   POST /api/users/login
@@ -18,7 +18,7 @@ const userAuth = asyncHandler(async (req, res) => {
       email: user.email,
       isAdmin: user.isAdmin,
       token: generateToken(user._id),
-      createdAt: user.createdAt,
+      createdAt: user.createdAt
     });
   } else {
     res.status(401);
@@ -45,7 +45,7 @@ const userRegister = asyncHandler(async (req, res) => {
   const user = await User.create({
     name,
     email,
-    password,
+    password
   });
   if (user) {
     res.status(201).json({
@@ -53,7 +53,7 @@ const userRegister = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
-      token: generateToken(user._id),
+      token: generateToken(user._id)
     });
   } else {
     res.status(400);
@@ -74,7 +74,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
-      createdAt: user.createdAt,
+      createdAt: user.createdAt
     });
   } else {
     res.status(401);
@@ -102,7 +102,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       email: updateUser.email,
       isAdmin: updateUser.isAdmin,
       createdAt: updateUser.createdAt,
-      token: generateToken(updateUser._id),
+      token: generateToken(updateUser._id)
     });
   } else {
     res.status(401);
@@ -129,8 +129,8 @@ const getAllUsersByAdmin = asyncHandler(async (req, res) => {
     ? {
         name: {
           $regex: req.query.keyword,
-          $options: "i",
-        },
+          $options: "i"
+        }
       }
     : {};
   const count = await User.countDocuments({ ...keyword });
@@ -141,11 +141,11 @@ const getAllUsersByAdmin = asyncHandler(async (req, res) => {
   res.json({ users, page, pages: Math.ceil(count / pageSize) });
 });
 
-module.exports = {
+export const userController = {
   userAuth,
   userRegister,
   getUserProfile,
   updateUserProfile,
   getAllUsers,
-  getAllUsersByAdmin,
+  getAllUsersByAdmin
 };

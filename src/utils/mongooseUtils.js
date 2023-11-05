@@ -6,5 +6,5 @@ const mongooseToObject = (mongoose) => {
 };
 export const mongooseUtils = {
   multipleMongooseToObject,
-  mongooseToObject,
+  mongooseToObject
 };

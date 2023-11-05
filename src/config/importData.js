@@ -1,10 +1,11 @@
-const express = require("express");
-const User = require("./models/UserModel");
-const users = require("./data/users");
-const Product = require("./models/ProductModel");
-const products = require("./data/Products");
+import express from "express";
+import User from "~/models/userModel";
+import { users } from "~/data/userData";
+import Product from "~/models/productModel";
+import { products } from "~/data/productData";
+import asyncHandler from "express-async-handler";
+
 const ImportData = express.Router();
-const asyncHandler = require("express-async-handler");
 
 ImportData.post(
   "/users",
@@ -23,4 +24,4 @@ ImportData.post(
   })
 );
 
-module.exports = ImportData;
+export default ImportData;

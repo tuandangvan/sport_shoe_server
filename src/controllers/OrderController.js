@@ -1,6 +1,7 @@
-const asyncHandler = require("express-async-handler");
-const Order = require("../src/models/OrderModel");
-const { multipleMongooseToObject } = require("../utils/mongoose");
+import asyncHandler from "express-async-handler";
+import Order from "~/models/orderModel";
+import { multipleMongooseToObject } from "~/utils/mongooseUtils";
+
 // @desc    Create Order
 // @route   POST /api/orders
 // @access  Private
@@ -13,7 +14,7 @@ const orderCreate = asyncHandler(async (req, res) => {
     itemsPrice,
     shippingPrice,
     taxPrice,
-    totalPrice,
+    totalPrice
   } = req.body;
 
   if (orderItems && orderItems.length === 0) {
@@ -28,7 +29,7 @@ const orderCreate = asyncHandler(async (req, res) => {
       itemsPrice,
       shippingPrice,
       taxPrice,
-      totalPrice,
+      totalPrice
     });
 
     const createOrder = await order.save();
@@ -84,7 +85,7 @@ const updateOrderPaid = asyncHandler(async (req, res) => {
       id: req.body.id,
       status: req.body.status,
       update_time: req.body.update_time,
-      email_address: req.body.email_address,
+      email_address: req.body.email_address
     };
     const updateOrder = await order.save();
     res.json(updateOrder);
@@ -163,7 +164,7 @@ const restoreOrderById = asyncHandler(async (req, res, next) => {
   }
 });
 
-module.exports = {
+export const orderController = {
   orderCreate,
   getOrderById,
   updateOrderPaid,
@@ -172,5 +173,5 @@ module.exports = {
   updateDeliveredOrder,
   deleteOrderId,
   deleteOrderIdForce,
-  restoreOrderById,
+  restoreOrderById
 };
