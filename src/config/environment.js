@@ -8,5 +8,9 @@ export const env = {
   APP_PORT: process.env.APP_PORT,
 
   AUTHOR: process.env.AUTHOR,
-  JWT_SECRET: process.env.JWT_SECRET
+  JWT_SECRET: process.env.JWT_SECRET,
+
+  CLOUD_NAME: process.env.CLOUD_NAME,
+  API_KEY: process.env.API_KEY,
+  API_SECRET: process.env.API_SECRET
 };

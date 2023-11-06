@@ -17,6 +17,7 @@ import { oAuth2Router } from "~/routes/v1/oAuth2Routes";
 import { orderRouter } from "~/routes/v1/orderRoutes";
 import { productRouter } from "~/routes/v1/productRoutes";
 import { userRouter } from "~/routes/v1/userRoutes";
+import { uploadRoute } from "./uploadRoute";
 import ImportData from "~/config/importData";
 
 const router = express.Router();
@@ -36,5 +37,6 @@ router.use("/oauth2", oAuth2Router);
 router.use("/orders", orderRouter);
 router.use("/products", productRouter);
 router.use("/users", userRouter);
+router.use("/upload", uploadRoute);
 
 export const APIs_V1 = router;
