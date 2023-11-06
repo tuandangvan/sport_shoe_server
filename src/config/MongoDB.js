@@ -6,7 +6,7 @@ let chatDatabaseInstance = null;
 // Connect database
 export const CONNECT_DATABASE = async () => {
   chatDatabaseInstance = await mongoose.connect(env.MONGODB_URI, {
-    dbName: env.MONGODB_DB_NAME,
+    dbName: env.DATABASE_NAME,
     useNewUrlParser: true,
     useUnifiedTopology: true
   });
