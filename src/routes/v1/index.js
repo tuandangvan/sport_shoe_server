@@ -30,11 +30,11 @@ router.get("/status", (req, res) => {
 });
 
 router.use("/import", ImportData);
-router.use("/category", categoryRouter);
+router.use("/categories", categoryRouter);
 router.use("/contact", contactRouter);
 router.use("/oauth2", oAuth2Router);
-router.use("/order", orderRouter);
-router.use("/product", productRouter);
-router.use("/user", userRouter);
+router.use("/orders", orderRouter);
+router.use("/products", productRouter);
+router.use("/users", userRouter);
 
 export const APIs_V1 = router;
