@@ -19,6 +19,13 @@ router.put(
   userController.updateUserProfile
 );
 
+// [PUT] CHANGE PASSWORD
+router.put(
+  "/change_password",
+  authMiddleware.protect,
+  userController.changePassword
+);
+
 // [GET] GET ALL USERS
 router.get(
   "/",

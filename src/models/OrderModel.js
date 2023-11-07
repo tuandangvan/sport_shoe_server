@@ -103,6 +103,7 @@ const orderSchema = mongoose.Schema(
     }
   },
   {
+    collection: "orders",
     timestamps: true
   }
 );

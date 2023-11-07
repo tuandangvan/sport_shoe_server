@@ -13,19 +13,43 @@ const userSchema = mongoose.Schema(
       required: false,
       unique: false
     },
+    address: {
+      type: String,
+      required: false,
+      unique: false
+    },
+    phoneNumber: {
+      type: String,
+      required: false,
+      unique: false
+    },
     password: {
       type: String,
       required: false,
       unique: false
+    },
+    avatarUrl: {
+      type: String,
+      required: false,
+      unique: false
+    },
+    codeConfirmMail: {
+      type: String,
+      required: false
     },
     isAdmin: {
       type: Boolean,
       required: true,
       default: false
     },
-    googleId: { type: Number, required: false }
+    googleId: { type: Number, required: false },
+    status: {
+      type: String,
+      required: true
+    }
   },
   {
+    collection: "users",
     timestamps: true
   }
 );

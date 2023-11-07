@@ -1,14 +1,3 @@
-// import
-// app.use("/api/v1/import", ImportData);
-// app.use("/api/v1/products", productRoute);
-// app.use("/api/v1/categories", categoryRouter);
-// app.use("/api/v1/users", userRouter);
-// app.use("/api/v1/orders", orderRouter);
-// app.use("/api/v1/contact", contactRouter);
-// app.use("/auth", OAuth2Router);
-// app.get("/api/config/paypal", (req, res) => {
-//   res.send(process.env.PAYPAL_CLIENT_ID);
-// });
 import express from "express";
 import { StatusCodes } from "http-status-codes";
 import { categoryRouter } from "~/routes/v1/categoryRoutes";
@@ -17,7 +6,8 @@ import { oAuth2Router } from "~/routes/v1/oAuth2Routes";
 import { orderRouter } from "~/routes/v1/orderRoutes";
 import { productRouter } from "~/routes/v1/productRoutes";
 import { userRouter } from "~/routes/v1/userRoutes";
-import { uploadRoute } from "./uploadRoute";
+import { brandRouter } from "~/routes/v1/brandRoutes";
+import { uploadRoute } from "~/routes/v1/uploadRoute";
 import ImportData from "~/config/importData";
 
 const router = express.Router();
@@ -32,6 +22,7 @@ router.get("/status", (req, res) => {
 
 router.use("/import", ImportData);
 router.use("/categories", categoryRouter);
+router.use("/brands", brandRouter);
 router.use("/contact", contactRouter);
 router.use("/oauth2", oAuth2Router);
 router.use("/orders", orderRouter);
