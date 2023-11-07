@@ -26,6 +26,38 @@ const reviewsSchema = mongoose.Schema(
   }
 );
 
+const sizeSchema = mongoose.Schema(
+  {
+    size: {
+      type: Number,
+      required: true
+    },
+    countInStock: {
+      type: Number,
+      require: true,
+      default: 0
+    }
+    
+  },
+  {
+    timestamps: true
+  }
+);
+
+const colorSchema = mongoose.Schema(
+  {
+    color: {
+      type: String,
+      required: true
+    },
+    sizes: [sizeSchema]
+    
+  },
+  {
+    timestamps: true
+  }
+);
+
 const productSchema = mongoose.Schema(
   {
     name: {
@@ -66,7 +98,8 @@ const productSchema = mongoose.Schema(
     category: {
       type: String,
       required: true
-    }
+    },
+    colors: [colorSchema]
   },
   {
     collection: "products",

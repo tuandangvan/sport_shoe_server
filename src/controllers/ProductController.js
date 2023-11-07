@@ -27,7 +27,7 @@ const getAllProduct = asyncHandler(async (req, res) => {
 const getAllProductByAdmin = asyncHandler(async (req, res) => {
   const pageSize = 12;
   const page = Number(req.query.pageNumber || 1);
-  const keyword = req.query.keyword
+  const keyword = null
     ? {
         name: {
           $regex: req.query.keyword,
@@ -37,12 +37,10 @@ const getAllProductByAdmin = asyncHandler(async (req, res) => {
     : {};
   const count = await Product.countDocuments({ ...keyword });
   const products = await Product.find({ ...keyword })
-    // .populate("category")
-    // .limit(pageSize)
-    // .skip(pageSize * (page - 1))
-    // .sort({ _id: -1 });
-
-    console.log(products)
+    .populate("category")
+    .limit(pageSize)
+    .skip(pageSize * (page - 1))
+    .sort({ _id: -1 });
   res.json({ products, page, pages: Math.ceil(count / pageSize) });
 });
 
@@ -67,7 +65,7 @@ const deleteProductByAdmin = asyncHandler(async (req, res) => {
 const createProductByAdmin = asyncHandler(async (req, res) => {
   // Declare Object need to be created
   const { name, price, description, image, countInStock, category } = req.body;
-  const categoryFound = await Category.findById(req.body.category);
+  const categoryFound = await Category.findById(category);
 
   if (!categoryFound) {
     return res.status(400).json({ message: "Category Not Found" });
@@ -86,8 +84,7 @@ const createProductByAdmin = asyncHandler(async (req, res) => {
       price,
       category: categoryFound.name,
       description,
-      image,
-      countInStock
+      image
     });
     if (product) {
       const createProduct = await product.save();
