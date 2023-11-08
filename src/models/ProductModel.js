@@ -37,10 +37,6 @@ const sizeSchema = mongoose.Schema(
       require: true,
       default: 0
     }
-    
-  },
-  {
-    timestamps: true
   }
 );
 
@@ -51,10 +47,6 @@ const colorSchema = mongoose.Schema(
       required: true
     },
     sizes: [sizeSchema]
-    
-  },
-  {
-    timestamps: true
   }
 );
 
