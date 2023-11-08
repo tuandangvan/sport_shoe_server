@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-<<<<<<< HEAD
 
 const reviewsSchema = mongoose.Schema(
   {
@@ -51,8 +50,6 @@ const colorSchema = mongoose.Schema(
   }
 );
 
-=======
->>>>>>> f2ba31572932e6a62b7a76b346b5002173509865
 const productSchema = mongoose.Schema(
   {
     productName: {
