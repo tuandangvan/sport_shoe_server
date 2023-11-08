@@ -19,7 +19,11 @@ const getAllProduct = asyncHandler(async (req, res) => {
         }
       }
     : {};
-  const products = await Product.find({ ...keyword, ...category, status: "Active" });
+  const products = await Product.find({
+    ...keyword,
+    ...category,
+    status: "Active"
+  });
   if (products) {
     return res.status(200).json(products);
   } else {
@@ -68,7 +72,15 @@ const deleteProductByAdmin = asyncHandler(async (req, res) => {
 // ?@access  Private
 const createProductByAdmin = asyncHandler(async (req, res) => {
   // Declare Object need to be created
-  const { productName, price, description, imageUrl, category,brand, typeProduct } = req.body;
+  const {
+    productName,
+    price,
+    description,
+    imageUrl,
+    category,
+    brand,
+    typeProduct
+  } = req.body;
   const categoryFound = await Category.findById(category);
 
   if (!categoryFound) {
@@ -104,8 +116,7 @@ const createProductByAdmin = asyncHandler(async (req, res) => {
 });
 
 const updateProductByAdmin = asyncHandler(async (req, res) => {
-  const { productName, price, description, image, categoryId } =
-    req.body;
+  const { productName, price, description, image, categoryId } = req.body;
   const product = await Product.findById(req.params.id).populate("category");
 
   if (product) {
@@ -131,17 +142,21 @@ const updateProductByAdmin = asyncHandler(async (req, res) => {
 // @access  Public
 
 const getSingleProduct = asyncHandler(async (req, res) => {
-
-  const token = req.header("Authorization").replace("Bearer ", "");
-  const decodeToken = verify(token, env.JWT_SECRET);
   const product = await Product.findById(req.params.id);
   let allowReview = false;
+  const token = req.header("Authorization")?.replace("Bearer ", "");
+  if (token) {
+    const decodeToken = verify(token, env.JWT_SECRET);
+    const order = await Order.findOne({
+      user: decodeToken.id,
+      "orderItems.product": product.id
+    });
+    if (order) allowReview = true;
+    product.allowReview = allowReview;
+  }
 
-  const order = await Order.findOne({user: decodeToken.id, "orderItems.product": product.id})
-
-  if(order) allowReview = true;
   if (product) {
-    res.json({product, allowReview: allowReview});
+    res.json({ product });
   } else {
     res.status(404);
     throw new Error("Product not Found");

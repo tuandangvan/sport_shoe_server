@@ -71,7 +71,11 @@ const productSchema = mongoose.Schema(
           required: true
         }
       }
-    ]
+    ],
+    allowReview:{
+      type: Boolean,
+      default: false
+    }
   },
   {
     collection: "products",
