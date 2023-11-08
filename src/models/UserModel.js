@@ -23,7 +23,7 @@ const userSchema = mongoose.Schema(
       type: String,
       required: false,
       unique: false,
-      efault: ""
+      default: ""
     },
     password: {
       type: String,
@@ -34,7 +34,7 @@ const userSchema = mongoose.Schema(
       type: String,
       required: false,
       unique: false,
-      efault: ""
+      default: ""
     },
     codeConfirmMail: {
       type: String,

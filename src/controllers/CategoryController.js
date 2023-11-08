@@ -7,7 +7,7 @@ import Category from "~/models/categoryModel";
 // ?@route   GET /api/categories/
 // ?@access  Private
 const getAllCategories = asyncHandler(async (req, res) => {
-  const categories = await Category.find({});
+  const categories = await Category.find({status: "Active"});
 
   if (!categories) {
     res.status(500).json({ success: false });
