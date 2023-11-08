@@ -1,4 +1,58 @@
 import mongoose from "mongoose";
+<<<<<<< HEAD
+
+const reviewsSchema = mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true
+    },
+    rating: {
+      type: Number,
+      required: true,
+      default: 0
+    },
+    comment: {
+      type: String,
+      required: true
+    },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "User"
+    }
+  },
+  {
+    timestamps: true
+  }
+);
+
+const sizeSchema = mongoose.Schema(
+  {
+    size: {
+      type: Number,
+      required: true
+    },
+    countInStock: {
+      type: Number,
+      require: true,
+      default: 0
+    }
+  }
+);
+
+const colorSchema = mongoose.Schema(
+  {
+    color: {
+      type: String,
+      required: true
+    },
+    sizes: [sizeSchema]
+  }
+);
+
+=======
+>>>>>>> f2ba31572932e6a62b7a76b346b5002173509865
 const productSchema = mongoose.Schema(
   {
     productName: {
@@ -52,7 +106,8 @@ const productSchema = mongoose.Schema(
     status: {
       type: String,
       required: true
-    }
+    },
+    colors: [colorSchema]
   },
   {
     collection: "products",

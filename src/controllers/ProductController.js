@@ -25,7 +25,7 @@ const getAllProduct = asyncHandler(async (req, res) => {
 });
 
 const getAllProductByAdmin = asyncHandler(async (req, res) => {
-  const pageSize = 12;
+  const pageSize = 8;
   const page = Number(req.query.pageNumber || 1);
   const keyword = req.query.keyword
     ? {
@@ -36,13 +36,12 @@ const getAllProductByAdmin = asyncHandler(async (req, res) => {
       }
     : {};
   const count = await Product.countDocuments({ ...keyword });
-  const products = await Product.find({ ...keyword });
-  // .populate("category")
-  // .limit(pageSize)
-  // .skip(pageSize * (page - 1))
-  // .sort({ _id: -1 });
+  const products = await Product.find({ ...keyword })
+    .populate("category")
+    .limit(pageSize)
+    .skip(pageSize * (page - 1))
+    .sort({ _id: -1 });
 
-  console.log(products);
   res.json({ products, page, pages: Math.ceil(count / pageSize) });
 });
 
@@ -66,8 +65,8 @@ const deleteProductByAdmin = asyncHandler(async (req, res) => {
 // ?@access  Private
 const createProductByAdmin = asyncHandler(async (req, res) => {
   // Declare Object need to be created
-  const { name, price, description, image, countInStock, category } = req.body;
-  const categoryFound = await Category.findById(req.body.category);
+  const { name, price, description, imageUrl, category, colors } = req.body;
+  const categoryFound = await Category.findById(category);
 
   if (!categoryFound) {
     return res.status(400).json({ message: "Category Not Found" });
@@ -86,8 +85,8 @@ const createProductByAdmin = asyncHandler(async (req, res) => {
       price,
       category: categoryFound.name,
       description,
-      image,
-      countInStock
+      image: imageUrl,
+      colors
     });
     if (product) {
       const createProduct = await product.save();
@@ -102,9 +101,8 @@ const createProductByAdmin = asyncHandler(async (req, res) => {
 });
 
 const updateProductByAdmin = asyncHandler(async (req, res) => {
-  const { name, price, description, image, countInStock, categoryId } =
+  const { name, price, description, image, categoryId } =
     req.body;
-
   const product = await Product.findById(req.params.id).populate("category");
 
   if (product) {
@@ -115,7 +113,6 @@ const updateProductByAdmin = asyncHandler(async (req, res) => {
     product.price = price || product.price;
     product.description = description || product.description;
     product.image = image || product.image;
-    product.countInStock = countInStock || product.countInStock;
     product.category = categoryFound.name || product.category.name;
     const updateProduct = await product.save();
     res.status(201).json(updateProduct);
