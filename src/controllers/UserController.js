@@ -1,7 +1,7 @@
 import asyncHandler from "express-async-handler";
 import User from "~/models/userModel";
 import { generateToken } from "~/utils/tokenUtils";
-import env from "~/config/environment";
+import {env} from "~/config/environment";
 import jwt from "jsonwebtoken";
 import { emailSender } from "~/middleware/mailMiddleware";
 
@@ -27,6 +27,7 @@ const userAuth = asyncHandler(async (req, res) => {
       phoneNumber: user.phoneNumber,
       password: user.password,
       avatarUrl: user.avatarUrl,
+      gender: user.gender,
       isAdmin: user.isAdmin,
       googleId: user.googleId,
       accessToken: generateToken.generateAccessToken(user._id),
