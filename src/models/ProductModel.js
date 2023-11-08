@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+<<<<<<< HEAD
 
 const reviewsSchema = mongoose.Schema(
   {
@@ -50,9 +51,11 @@ const colorSchema = mongoose.Schema(
   }
 );
 
+=======
+>>>>>>> f2ba31572932e6a62b7a76b346b5002173509865
 const productSchema = mongoose.Schema(
   {
-    name: {
+    productName: {
       type: String,
       required: true,
       unique: true
@@ -66,7 +69,12 @@ const productSchema = mongoose.Schema(
       type: String,
       required: true
     },
-    reviews: [reviewsSchema],
+    reviews: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
+      }
+    ],
     rating: {
       type: Number,
       required: true,
@@ -87,7 +95,15 @@ const productSchema = mongoose.Schema(
       required: true,
       default: 0
     },
-    category: {
+    categoryName: {
+      type: String,
+      required: true
+    },
+    brandName: {
+      type: String,
+      required: true
+    },
+    status: {
       type: String,
       required: true
     },

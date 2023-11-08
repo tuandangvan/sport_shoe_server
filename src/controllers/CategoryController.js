@@ -17,30 +17,32 @@ const getAllCategories = asyncHandler(async (req, res) => {
 
 const createCategoriesByAdmin = asyncHandler(async (req, res, next) => {
   try {
-    const { name, description, imageUrl } = req.body;
-    const usedCategory = await Category.findOne({ name: name });
+    const { categoryName, description } = req.body;
+    const usedCategory = await Category.findOne({ categoryName: categoryName });
     if (usedCategory) {
       res.status(400).json({ message: "Category already exists" });
     }
 
-    let categoryFields = {};
-    if (name) categoryFields.name = name;
-    if (description) categoryFields.description = description;
-    if (imageUrl) categoryFields.image = imageUrl;
+    const categoryFields = {
+      categoryName: categoryName,
+      description: description,
+      status: "Active"
+    };
 
     const newCategory = await new Category(categoryFields).save();
-    console.log(newCategory)
     res.json(newCategory);
   } catch (error) {
     next(error);
   }
 });
-const deleteCategoryByAdmin = asyncHandler(async (req, res) => {
-  const categoryId = await Category.findById(req.params.id);
 
-  if (categoryId) {
+const deleteCategoryByAdmin = asyncHandler(async (req, res) => {
+  const category = await Category.findById(req.params.id);
+
+  if (category) {
+    category.status = "Deleted";
     res.status(201).json({ message: "Deleted successfully category" });
-    await categoryId.remove();
+    await category.save();
   } else {
     res.status(404);
     throw new Error("Cannot delete category");
@@ -48,9 +50,7 @@ const deleteCategoryByAdmin = asyncHandler(async (req, res) => {
 });
 
 const getSingleCategoryByAdmin = asyncHandler(async (req, res) => {
-  const singleCategory = await Category.findById(req.params.id).populate(
-    "product"
-  );
+  const singleCategory = await Category.findById(req.params.id);
   if (singleCategory) {
     res.status(201).json(singleCategory);
   } else {
@@ -61,10 +61,9 @@ const getSingleCategoryByAdmin = asyncHandler(async (req, res) => {
 
 const updateCategoryByAdmin = asyncHandler(async (req, res) => {
   const category = await Category.findById(req.params.id);
-  const { name, description } = req.body;
+  const { categoryName, description } = req.body;
   if (category) {
-    category.name = name || category.name;
-    category.slug = name || category.name;
+    category.categoryName = categoryName || category.categoryName;
     category.description = description || category.description;
     const updateCategory = await category.save();
     res.status(201).json(updateCategory);
