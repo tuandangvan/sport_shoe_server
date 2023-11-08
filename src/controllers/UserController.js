@@ -27,6 +27,7 @@ const userAuth = asyncHandler(async (req, res) => {
       phoneNumber: user.phoneNumber,
       password: user.password,
       avatarUrl: user.avatarUrl,
+      gender: user.gender,
       isAdmin: user.isAdmin,
       googleId: user.googleId,
       accessToken: generateToken.generateAccessToken(user._id),
