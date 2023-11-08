@@ -20,19 +20,22 @@ const userAuth = asyncHandler(async (req, res) => {
     user.status === "Active"
   ) {
     res.json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      address: user.address,
-      phoneNumber: user.phoneNumber,
-      password: user.password,
-      avatarUrl: user.avatarUrl,
-      gender: user.gender,
-      isAdmin: user.isAdmin,
-      googleId: user.googleId,
+      data: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        address: user.address,
+        phoneNumber: user.phoneNumber,
+        password: user.password,
+        avatarUrl: user.avatarUrl,
+        gender: user.gender,
+        isAdmin: user.isAdmin,
+        googleId: user.googleId,
+        status: user.status,
+        createdAt: user.createdAt
+      },
       accessToken: generateToken.generateAccessToken(user._id),
-      refreshToken: generateToken.generateRefreshToken(user._id),
-      createdAt: user.createdAt
+      refreshToken: generateToken.generateRefreshToken(user._id)
     });
   } else if (user && user.status === "Peding") {
     res.status(402);
@@ -99,6 +102,7 @@ const userRegister = asyncHandler(async (req, res) => {
       phoneNumber: user.phoneNumber,
       password: user.password,
       avatarUrl: user.avatarUrl,
+      gender: user.gender,
       isAdmin: user.isAdmin,
       googleId: user.googleId,
       status: user.status,
@@ -147,6 +151,8 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     user.name = req.body.name || user.name;
     user.address = req.body.address || user.address;
     user.phoneNumber = req.body.phoneNumber || user.phoneNumber;
+    user.gender = req.body.gender || user.gender;
+    user.avatarUrl = req.body.avatarUrl || user.avatarUrl;
     await user.save();
     res.json({
       _id: user._id,
