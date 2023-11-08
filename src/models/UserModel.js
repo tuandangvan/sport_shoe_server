@@ -16,12 +16,14 @@ const userSchema = mongoose.Schema(
     address: {
       type: String,
       required: false,
-      unique: false
+      unique: false,
+      default: ""
     },
     phoneNumber: {
       type: String,
       required: false,
-      unique: false
+      unique: false,
+      efault: ""
     },
     password: {
       type: String,
@@ -31,7 +33,8 @@ const userSchema = mongoose.Schema(
     avatarUrl: {
       type: String,
       required: false,
-      unique: false
+      unique: false,
+      efault: ""
     },
     codeConfirmMail: {
       type: String,
