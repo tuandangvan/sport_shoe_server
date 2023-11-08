@@ -2,7 +2,7 @@ import { env } from "~/config/environment";
 import jwt from "jsonwebtoken";
 const generateAccessToken = (id) => {
   return jwt.sign({ id }, env.JWT_SECRET, {
-    expiresIn: "15m"
+    expiresIn: "1d"
   });
 };
 
