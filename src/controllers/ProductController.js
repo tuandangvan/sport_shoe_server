@@ -36,13 +36,13 @@ const getAllProductByAdmin = asyncHandler(async (req, res) => {
       }
     : {};
   const count = await Product.countDocuments({ ...keyword });
-  const products = await Product.find({ ...keyword })
-    // .populate("category")
-    // .limit(pageSize)
-    // .skip(pageSize * (page - 1))
-    // .sort({ _id: -1 });
+  const products = await Product.find({ ...keyword });
+  // .populate("category")
+  // .limit(pageSize)
+  // .skip(pageSize * (page - 1))
+  // .sort({ _id: -1 });
 
-    console.log(products)
+  console.log(products);
   res.json({ products, page, pages: Math.ceil(count / pageSize) });
 });
 

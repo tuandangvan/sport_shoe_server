@@ -1,6 +1,9 @@
 import asyncHandler from "express-async-handler";
 import User from "~/models/userModel";
-import { generateToken } from "~/utils/generateToken";
+import { generateToken } from "~/utils/tokenUtils";
+import env from "~/config/environment";
+import jwt from "jsonwebtoken";
+import { emailSender } from "~/middleware/mailMiddleware";
 
 // @desc    Auth user & get a token
 // @route   POST /api/users/login
@@ -11,18 +14,53 @@ const userAuth = asyncHandler(async (req, res) => {
 
   const user = await User.findOne({ email });
 
-  if (user && (await user.matchPassword(password))) {
+  if (
+    user &&
+    (await user.matchPassword(password)) &&
+    user.status === "Active"
+  ) {
     res.json({
       _id: user._id,
       name: user.name,
       email: user.email,
+      address: user.address,
+      phoneNumber: user.phoneNumber,
+      password: user.password,
+      avatarUrl: user.avatarUrl,
       isAdmin: user.isAdmin,
-      token: generateToken(user._id),
+      googleId: user.googleId,
+      accessToken: generateToken.generateAccessToken(user._id),
+      refreshToken: generateToken.generateRefreshToken(user._id),
       createdAt: user.createdAt
     });
+  } else if (user && user.status === "Peding") {
+    res.status(402);
+    throw new Error("Account is not active yet");
   } else {
     res.status(401);
     throw new Error("Invalid Email or Password");
+  }
+});
+
+// @desc    Get new access token
+// @route   POST /api/users/refreshtoken
+// @access  Public
+const refreshToken = asyncHandler(async (req, res) => {
+  const { refreshToken, email } = req.body;
+
+  const user = await User.findOne({ email });
+  const decoded = jwt.verify(refreshToken, env.JWT_SECRET);
+  if (
+    user &&
+    decoded.id === user._id &&
+    user.status === "Active" &&
+    decoded.exp > Date.now() / 1000
+  ) {
+    const accessToken = generateToken.generateAccessToken(user._id);
+    res.json(accessToken);
+  } else {
+    res.status(401);
+    throw new Error("Refresh token is out of date");
   }
 });
 
@@ -40,20 +78,30 @@ const userRegister = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("User already exists");
   }
-
+  const token = generateToken.generateUUID();
   // * Create USER
   const user = await User.create({
     name,
     email,
-    password
+    password,
+    status: "Peding",
+    codeConfirmMail: token
   });
+
   if (user) {
+    emailSender.sendConfirmMail({ email, message: token });
     res.status(201).json({
       _id: user._id,
       name: user.name,
       email: user.email,
+      address: user.address,
+      phoneNumber: user.phoneNumber,
+      password: user.password,
+      avatarUrl: user.avatarUrl,
       isAdmin: user.isAdmin,
-      token: generateToken(user._id)
+      googleId: user.googleId,
+      status: user.status,
+      createdAt: user.createdAt
     });
   } else {
     res.status(400);
@@ -73,7 +121,13 @@ const getUserProfile = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      address: user.address,
+      phoneNumber: user.phoneNumber,
+      password: user.password,
+      avatarUrl: user.avatarUrl,
       isAdmin: user.isAdmin,
+      googleId: user.googleId,
+      status: user.status,
       createdAt: user.createdAt
     });
   } else {
@@ -90,23 +144,43 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
   if (user) {
     user.name = req.body.name || user.name;
-    user.email = req.body.email || user.email;
-
-    if (req.body.password) {
-      user.password = req.body.password;
-    }
-    const updateUser = await user.save();
+    user.address = req.body.address || user.address;
+    user.phoneNumber = req.body.phoneNumber || user.phoneNumber;
+    await user.save();
     res.json({
-      _id: updateUser._id,
-      name: updateUser.name,
-      email: updateUser.email,
-      isAdmin: updateUser.isAdmin,
-      createdAt: updateUser.createdAt,
-      token: generateToken(updateUser._id)
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      address: user.address,
+      phoneNumber: user.phoneNumber,
+      password: user.password,
+      avatarUrl: user.avatarUrl,
+      isAdmin: user.isAdmin,
+      googleId: user.googleId,
+      status: user.status,
+      createdAt: user.createdAt
     });
   } else {
     res.status(401);
     throw new Error("User Not Found");
+  }
+});
+
+const changePassword = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+  const { oldPassword, newPassword } = req.body;
+  if (user) {
+    const isMatch = await user.matchPassword(oldPassword);
+    if (isMatch) {
+      user.password = newPassword;
+      await user.save();
+      res.json({
+        message: "Change password successfully"
+      });
+    } else {
+      res.status(401);
+      throw new Error("Old password is incorrect");
+    }
   }
 });
 
@@ -144,7 +218,9 @@ const getAllUsersByAdmin = asyncHandler(async (req, res) => {
 export const userController = {
   userAuth,
   userRegister,
+  refreshToken,
   getUserProfile,
+  changePassword,
   updateUserProfile,
   getAllUsers,
   getAllUsersByAdmin
