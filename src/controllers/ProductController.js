@@ -1,6 +1,9 @@
 import asyncHandler from "express-async-handler";
 import Product from "~/models/productModel";
 import Category from "~/models/categoryModel";
+import { verify } from "jsonwebtoken";
+import { env } from "~/config/environment";
+import Order from "~/models/orderModel";
 
 // @desc    get all product
 // @route   GET /api/products/
@@ -128,9 +131,17 @@ const updateProductByAdmin = asyncHandler(async (req, res) => {
 // @access  Public
 
 const getSingleProduct = asyncHandler(async (req, res) => {
+
+  const token = req.header("Authorization").replace("Bearer ", "");
+  const decodeToken = verify(token, env.JWT_SECRET);
   const product = await Product.findById(req.params.id);
+  let allowReview = false;
+
+  const order = await Order.findOne({user: decodeToken.id, "orderItems.product": product.id})
+
+  if(order) allowReview = true;
   if (product) {
-    res.json(product);
+    res.json({product, allowReview: allowReview});
   } else {
     res.status(404);
     throw new Error("Product not Found");
