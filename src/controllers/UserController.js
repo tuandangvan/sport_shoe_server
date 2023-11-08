@@ -1,7 +1,7 @@
 import asyncHandler from "express-async-handler";
 import User from "~/models/userModel";
 import { generateToken } from "~/utils/tokenUtils";
-import {env} from "~/config/environment";
+import { env } from "~/config/environment";
 import jwt from "jsonwebtoken";
 import { emailSender } from "~/middleware/mailMiddleware";
 
