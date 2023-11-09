@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const productSchema = mongoose.Schema(
   {
@@ -18,6 +18,10 @@ const productSchema = mongoose.Schema(
     },
     reviews: [
       {
+        _id: {
+          type: Schema.Types.ObjectId,
+          auto: false
+        },
         reviewId: {
           type: mongoose.Schema.Types.ObjectId,
           required: true,
@@ -41,8 +45,7 @@ const productSchema = mongoose.Schema(
       default: 0
     },
     countInStock: {
-      type: Number,
-      required: true
+      type: Number
     },
     categoryName: {
       type: String,
