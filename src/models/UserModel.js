@@ -52,7 +52,8 @@ const userSchema = mongoose.Schema(
     googleId: { type: Number, required: false },
     status: {
       type: String,
-      required: true
+      required: true,
+      default: "Active"
     }
   },
   {

@@ -76,6 +76,11 @@ const userRegister = asyncHandler(async (req, res) => {
   // ! CHECK EXISTING USER
   const { name, email, password } = req.body;
 
+  if (email == "" || password == "") {
+    res.status(400);
+    throw new Error("Email or password not allow null!");
+  }
+
   const userExists = await User.findOne({ email });
 
   if (userExists) {
