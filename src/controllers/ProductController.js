@@ -1,6 +1,9 @@
 import asyncHandler from "express-async-handler";
 import Product from "~/models/productModel";
 import Category from "~/models/categoryModel";
+import { verify } from "jsonwebtoken";
+import { env } from "~/config/environment";
+import Order from "~/models/orderModel";
 
 // @desc    get all product
 // @route   GET /api/products/
@@ -16,7 +19,11 @@ const getAllProduct = asyncHandler(async (req, res) => {
         }
       }
     : {};
-  const products = await Product.find({ ...keyword, ...category });
+  const products = await Product.find({
+    ...keyword,
+    ...category,
+    status: "Active"
+  });
   if (products) {
     return res.status(200).json(products);
   } else {
@@ -36,7 +43,7 @@ const getAllProductByAdmin = asyncHandler(async (req, res) => {
       }
     : {};
   const count = await Product.countDocuments({ ...keyword });
-  const products = await Product.find({ ...keyword })
+  const products = await Product.find({ ...keyword, status: "Active" })
     .populate("category")
     .limit(pageSize)
     .skip(pageSize * (page - 1))
@@ -65,7 +72,15 @@ const deleteProductByAdmin = asyncHandler(async (req, res) => {
 // ?@access  Private
 const createProductByAdmin = asyncHandler(async (req, res) => {
   // Declare Object need to be created
-  const { name, price, description, imageUrl, category, colors } = req.body;
+  const {
+    productName,
+    price,
+    description,
+    imageUrl,
+    category,
+    brand,
+    typeProduct
+  } = req.body;
   const categoryFound = await Category.findById(category);
 
   if (!categoryFound) {
@@ -73,7 +88,7 @@ const createProductByAdmin = asyncHandler(async (req, res) => {
   }
 
   // ? Check Exist Product
-  const productExist = await Product.findOne({ name: name });
+  const productExist = await Product.findOne({ productName: productName });
 
   if (productExist) {
     res.status(400);
@@ -81,12 +96,12 @@ const createProductByAdmin = asyncHandler(async (req, res) => {
   } else {
     // Create New Value from Model
     const product = new Product({
-      name,
+      productName,
       price,
-      category: categoryFound.name,
+      categoryName: categoryFound.categoryName,
       description,
       image: imageUrl,
-      colors
+      typeProduct
     });
     if (product) {
       const createProduct = await product.save();
@@ -101,19 +116,18 @@ const createProductByAdmin = asyncHandler(async (req, res) => {
 });
 
 const updateProductByAdmin = asyncHandler(async (req, res) => {
-  const { name, price, description, image, categoryId } =
-    req.body;
+  const { productName, price, description, image, categoryId } = req.body;
   const product = await Product.findById(req.params.id).populate("category");
 
   if (product) {
     // if (categoryId) {
     let categoryFound = await Category.findOne({ name: req.body.category });
     // * Update by any object
-    product.name = name || product.name;
+    product.productName = productName || product.productName;
     product.price = price || product.price;
     product.description = description || product.description;
     product.image = image || product.image;
-    product.category = categoryFound.name || product.category.name;
+    product.categoryName = categoryFound.categoryName || product.categoryName;
     const updateProduct = await product.save();
     res.status(201).json(updateProduct);
     // }
@@ -128,9 +142,21 @@ const updateProductByAdmin = asyncHandler(async (req, res) => {
 // @access  Public
 
 const getSingleProduct = asyncHandler(async (req, res) => {
-  const product = await Product.findById(req.params.id).populate("category");
+  const product = await Product.findById(req.params.id);
+  let allowReview = false;
+  const token = req.header("Authorization")?.replace("Bearer ", "");
+  if (token) {
+    const decodeToken = verify(token, env.JWT_SECRET);
+    const order = await Order.findOne({
+      user: decodeToken.id,
+      "orderItems.product": product.id
+    });
+    if (order) allowReview = true;
+    product.allowReview = allowReview;
+  }
+
   if (product) {
-    res.json(product);
+    res.json({ product });
   } else {
     res.status(404);
     throw new Error("Product not Found");

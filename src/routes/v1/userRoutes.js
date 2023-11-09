@@ -1,6 +1,7 @@
 import express from "express";
 import { authMiddleware } from "~/middleware/authMiddleware";
 import { userController } from "~/controllers/userController";
+import fileImage from "~/utils/uploadCloudinary";
 
 const router = express.Router();
 // [POST] LOGIN
@@ -17,6 +18,12 @@ router.put(
   "/profile",
   authMiddleware.protect,
   userController.updateUserProfile
+);
+
+router.put(
+  "/avatar",
+  authMiddleware.protect, fileImage.single("file"),
+  userController.updateAvatar
 );
 
 // [PUT] CHANGE PASSWORD

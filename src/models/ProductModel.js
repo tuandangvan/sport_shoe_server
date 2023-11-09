@@ -1,51 +1,5 @@
 import mongoose from "mongoose";
 
-const reviewsSchema = mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: true
-    },
-    rating: {
-      type: Number,
-      required: true,
-      default: 0
-    },
-    comment: {
-      type: String,
-      required: true
-    },
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-      ref: "User"
-    }
-  },
-  {
-    timestamps: true
-  }
-);
-
-const sizeSchema = mongoose.Schema({
-  size: {
-    type: Number,
-    required: true
-  },
-  countInStock: {
-    type: Number,
-    require: true,
-    default: 0
-  }
-});
-
-const colorSchema = mongoose.Schema({
-  color: {
-    type: String,
-    required: true
-  },
-  sizes: [sizeSchema]
-});
-
 const productSchema = mongoose.Schema(
   {
     productName: {
@@ -64,8 +18,11 @@ const productSchema = mongoose.Schema(
     },
     reviews: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true
+        reviewId: {
+          type: mongoose.Schema.Types.ObjectId,
+          required: true,
+          ref: "Review"
+        }
       }
     ],
     rating: {
@@ -85,8 +42,7 @@ const productSchema = mongoose.Schema(
     },
     countInStock: {
       type: Number,
-      required: true,
-      default: 0
+      required: true
     },
     categoryName: {
       type: String,
@@ -100,7 +56,26 @@ const productSchema = mongoose.Schema(
       type: String,
       required: true
     },
-    colors: [colorSchema]
+    typeProduct: [
+      {
+        size: {
+          type: String,
+          required: true
+        },
+        color: {
+          type: String,
+          required: true
+        },
+        quantity: {
+          type: Number,
+          required: true
+        }
+      }
+    ],
+    allowReview:{
+      type: Boolean,
+      default: false
+    }
   },
   {
     collection: "products",
