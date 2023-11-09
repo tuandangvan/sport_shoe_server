@@ -175,6 +175,44 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
+const updateAvatar = asyncHandler(async (req, res) => {
+  let avatarUrl = null;
+  try {
+    if (req.file) {
+      avatarUrl = req.file.path;
+    } else {
+      res.status(401);
+      throw new Error("Can't upload avatar!");
+    }
+  } catch (error) {
+    res.status(401);
+    throw new Error("Can't upload avatar!");
+  }
+
+  const user = await User.findById(req.user._id);
+  if (user) {
+    user.avatarUrl = avatarUrl || user.avatarUrl;
+    await user.save();
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      address: user.address,
+      phoneNumber: user.phoneNumber,
+      password: user.password,
+      avatarUrl: user.avatarUrl,
+      gender: user.gender,
+      isAdmin: user.isAdmin,
+      googleId: user.googleId,
+      status: user.status,
+      createdAt: user.createdAt
+    });
+  } else {
+    res.status(401);
+    throw new Error("User Not Found");
+  }
+});
+
 const changePassword = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
   const { oldPassword, newPassword } = req.body;
@@ -232,5 +270,6 @@ export const userController = {
   changePassword,
   updateUserProfile,
   getAllUsers,
-  getAllUsersByAdmin
+  getAllUsersByAdmin,
+  updateAvatar
 };
