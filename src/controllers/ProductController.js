@@ -4,6 +4,7 @@ import Category from "~/models/categoryModel";
 import { verify } from "jsonwebtoken";
 import { env } from "~/config/environment";
 import Order from "~/models/orderModel";
+import reviewModel from "~/models/reviewModel";
 
 // @desc    get all product
 // @route   GET /api/products/
@@ -42,9 +43,8 @@ const getAllProductByAdmin = asyncHandler(async (req, res) => {
         }
       }
     : {};
-  const count = await Product.countDocuments({ ...keyword });
+  const count = await Product.countDocuments({ ...keyword, status: "Active" });
   const products = await Product.find({ ...keyword, status: "Active" })
-    .populate("category")
     .limit(pageSize)
     .skip(pageSize * (page - 1))
     .sort({ _id: -1 });
@@ -78,7 +78,7 @@ const createProductByAdmin = asyncHandler(async (req, res) => {
     description,
     imageUrl,
     category,
-    brand,
+    brandName,
     typeProduct
   } = req.body;
   const categoryFound = await Category.findById(category);
@@ -101,7 +101,9 @@ const createProductByAdmin = asyncHandler(async (req, res) => {
       categoryName: categoryFound.categoryName,
       description,
       image: imageUrl,
-      typeProduct
+      brandName,
+      typeProduct,
+      status: "Active"
     });
     if (product) {
       const createProduct = await product.save();
@@ -150,7 +152,7 @@ const getSingleProduct = asyncHandler(async (req, res) => {
     const order = await Order.findOne({
       user: decodeToken.id,
       "orderItems.product": product.id
-    });
+    }).populate("reviews.reviewId");
     if (order) allowReview = true;
     product.allowReview = allowReview;
   }
@@ -175,28 +177,38 @@ const createProductReview = asyncHandler(async (req, res) => {
 
   // Find already reviewed
   if (product) {
-    const alreadyReviewed = product.reviews.find(
-      (r) => r.user.toString() === req.user._id.toString()
-    );
-    if (alreadyReviewed) {
-      res.status(400);
-      throw new Error("Product already reviewed");
-    }
+  //   const alreadyReviewed = product.reviews.find(
+  //     (r) => r.user.toString() === req.user._id.toString()
+  //   );
+  //   if (alreadyReviewed) {
+  //     res.status(400);
+  //     throw new Error("Product already reviewed");
+  //   }
     //* Push req.review in user array
-    const review = {
+    const review = new reviewModel({
       name: req.user.name,
       rating: Number(rating),
       comment,
       user: req.user._id,
+      status: "true",
       timestamps: true
-    };
+    });
+    console.log(review)
 
-    product.reviews.push(review);
-    product.numReviews = product.reviews.length;
-    product.rating =
-      product.reviews.reduce((a, b) => b.rating + a, 0) /
-      product.reviews.length;
+    const reviewd =  await review.save();
+    product.reviews.push({reviewId: reviewd.id});
     await product.save();
+
+    const product_reset = await Product.findById(req.params.id);
+
+    await product_reset.populate("reviews.reviewId");
+
+    product_reset.numReviews = product.reviews.length;
+    product_reset.rating =
+    product_reset.reviews.reduce((a, b) => b.reviewId.rating + a, 0) /
+    product_reset.reviews.length;
+
+    await product_reset.save();
     res.status(201).json({ message: "Reviews added" });
   } else {
     res.status(404);
