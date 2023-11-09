@@ -3,7 +3,7 @@ import { authMiddleware } from "~/middleware/authMiddleware";
 import { userController } from "~/controllers/userController";
 
 const router = express.Router();
-// [POST] GET ALL USERS
+// [POST] LOGIN
 router.post("/login", userController.userAuth);
 
 // [POST] REGISTER

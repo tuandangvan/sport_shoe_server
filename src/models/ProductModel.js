@@ -26,29 +26,25 @@ const reviewsSchema = mongoose.Schema(
   }
 );
 
-const sizeSchema = mongoose.Schema(
-  {
-    size: {
-      type: Number,
-      required: true
-    },
-    countInStock: {
-      type: Number,
-      require: true,
-      default: 0
-    }
+const sizeSchema = mongoose.Schema({
+  size: {
+    type: Number,
+    required: true
+  },
+  countInStock: {
+    type: Number,
+    require: true,
+    default: 0
   }
-);
+});
 
-const colorSchema = mongoose.Schema(
-  {
-    color: {
-      type: String,
-      required: true
-    },
-    sizes: [sizeSchema]
-  }
-);
+const colorSchema = mongoose.Schema({
+  color: {
+    type: String,
+    required: true
+  },
+  sizes: [sizeSchema]
+});
 
 const productSchema = mongoose.Schema(
   {

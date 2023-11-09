@@ -20,7 +20,7 @@ const sendMailTemplate = (options) => {
 
   transporter.sendMail(options, (err, info) => {
     if (err) {
-      console.log(err);
+      console.log("Error occurred. " + err.message);
       return;
     }
   });
