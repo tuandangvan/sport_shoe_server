@@ -1,5 +1,6 @@
 import asyncHandler from "express-async-handler";
 import Category from "~/models/categoryModel";
+import Product from "~/models/productModel";
 // import slugify from "slugify";
 // import Product from "~/models/productModel";
 
@@ -7,7 +8,7 @@ import Category from "~/models/categoryModel";
 // ?@route   GET /api/categories/
 // ?@access  Private
 const getAllCategories = asyncHandler(async (req, res) => {
-  const categories = await Category.find({status: "Active"});
+  const categories = await Category.find({ status: "Active" });
 
   if (!categories) {
     res.status(500).json({ success: false });
@@ -40,9 +41,16 @@ const deleteCategoryByAdmin = asyncHandler(async (req, res) => {
   const category = await Category.findById(req.params.id);
 
   if (category) {
+    const product = await Product.findOne({
+      categoryName: category.categoryName
+    });
+    if (product) {
+      res.status(400);
+      throw new Error("Cannot delete category");
+    }
     category.status = "Deleted";
-    res.status(201).json({ message: "Deleted successfully category" });
     await category.save();
+    res.status(201).json({ message: "Deleted successfully category" });
   } else {
     res.status(404);
     throw new Error("Cannot delete category");
@@ -62,6 +70,15 @@ const getSingleCategoryByAdmin = asyncHandler(async (req, res) => {
 const updateCategoryByAdmin = asyncHandler(async (req, res) => {
   const category = await Category.findById(req.params.id);
   const { categoryName, description } = req.body;
+  const categoryNameExists = await Category.findOne({
+    categoryName: categoryName
+  });
+  if (
+    categoryNameExists &&
+    categoryNameExists._id.toString() != req.params.id
+  ) {
+    res.status(400).json({ message: "Category already exists" });
+  }
   if (category) {
     category.categoryName = categoryName || category.categoryName;
     category.description = description || category.description;

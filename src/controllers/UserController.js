@@ -20,7 +20,7 @@ const userAuth = asyncHandler(async (req, res) => {
     user.status === "Active"
   ) {
     res.json({
-      data: {
+      userInfo: {
         _id: user._id,
         name: user.name,
         email: user.email,
@@ -54,14 +54,15 @@ const refreshToken = asyncHandler(async (req, res) => {
 
   const user = await User.findOne({ email });
   const decoded = jwt.verify(refreshToken, env.JWT_SECRET);
+
   if (
     user &&
-    decoded.id === user._id &&
+    decoded.id === user._id.toString() &&
     user.status === "Active" &&
     decoded.exp > Date.now() / 1000
   ) {
     const accessToken = generateToken.generateAccessToken(user._id);
-    res.json(accessToken);
+    res.json({ success: true, accessToken });
   } else {
     res.status(401);
     throw new Error("Refresh token is out of date");

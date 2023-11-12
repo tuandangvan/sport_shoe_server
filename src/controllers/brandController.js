@@ -6,7 +6,7 @@ import Brand from "~/models/brandModel";
 // ?@access  Private
 
 const getAllBrands = asyncHandler(async (req, res) => {
-  const brands = await Brand.find({});
+  const brands = await Brand.find({ status: "Active" });
 
   if (!brands) {
     res.status(500).json({ success: false });
@@ -40,8 +40,8 @@ const deleteBrandByAdmin = asyncHandler(async (req, res) => {
 
   if (brand) {
     brand.status = "Deleted";
-    res.status(201).json({ message: "Deleted successfully brand" });
     await brand.save();
+    res.status(201).json({ message: "Deleted successfully brand" });
   } else {
     res.status(404);
     throw new Error("Cannot delete brand");
@@ -61,6 +61,10 @@ const getSingleBrandByAdmin = asyncHandler(async (req, res) => {
 const updateBrandByAdmin = asyncHandler(async (req, res) => {
   const brand = await Brand.findById(req.params.id);
   const { brandName, imageUrl, origin } = req.body;
+  const brandNameExist = await Brand.findOne({ brandName: brandName });
+  if (brandNameExist) {
+    res.status(400).json({ message: "Brand already exists" });
+  }
   if (brand) {
     brand.brandName = brandName || brand.brandName;
     brand.imageUrl = imageUrl || brand.imageUrl;

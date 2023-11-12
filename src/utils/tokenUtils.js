@@ -2,13 +2,13 @@ import { env } from "~/config/environment";
 import jwt from "jsonwebtoken";
 const generateAccessToken = (id) => {
   return jwt.sign({ id }, env.JWT_SECRET, {
-    expiresIn: "1d"
+    expiresIn: "10m"
   });
 };
 
 const generateRefreshToken = (id) => {
   return jwt.sign({ id }, env.JWT_SECRET, {
-    expiresIn: "1d"
+    expiresIn: "1h"
   });
 };
 
