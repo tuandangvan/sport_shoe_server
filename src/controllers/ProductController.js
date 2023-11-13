@@ -139,6 +139,37 @@ const updateProductByAdmin = asyncHandler(async (req, res) => {
   }
 });
 
+const handlerTypeProduct = (product) => {
+  const typeProduct = product.typeProduct;
+
+  //filter color
+  const uniqueColors = new Set();
+  typeProduct.forEach((item) => {
+    if (item.color) {
+      uniqueColors.add(item.color);
+    }
+  });
+  const colorArray = Array.from(uniqueColors);
+
+  var type = [];
+
+  colorArray.forEach((itemColor) => {
+    var color = {};
+    typeProduct.forEach((item) => {
+      if (item.color == itemColor) {
+        var size = { size: item.size, quantity: item.quantity };
+        if (!color[itemColor]) {
+          color[itemColor] = [];
+        }
+        color[itemColor].push(size);
+      }
+    });
+    type.push(color);
+  });
+
+  return type;
+};
+
 // @desc    Get ID Single Product
 // @route   GET /api/products/:id
 // @access  Public
@@ -156,26 +187,29 @@ const getSingleProduct = asyncHandler(async (req, res) => {
     if (order) allowReview = true;
   }
 
+  const typeProduct = handlerTypeProduct(product);
+
   await product.populate("reviews.reviewId");
 
   if (product) {
-    res.json({ product:{
-      productName: product.productName,
-      image: product.image,
-      description: product.description,
-      reviews: product.reviews,
-      rating: product.rating,
-      numReviews: product.numReviews,
-      price: product.price,
-      countInStock: product.countInStock,
-      categoryName: product.categoryName,
-      brandName: product.brandName,
-      status: product.status,
-      typeProduct: product.typeProduct,
-      sold: product.sold,
-      allowReview: allowReview
-      
-    } });
+    res.json({
+      product: {
+        productName: product.productName,
+        image: product.image,
+        description: product.description,
+        reviews: product.reviews,
+        rating: product.rating,
+        numReviews: product.numReviews,
+        price: product.price,
+        countInStock: product.countInStock,
+        categoryName: product.categoryName,
+        brandName: product.brandName,
+        status: product.status,
+        typeProduct: typeProduct,
+        sold: product.sold,
+        allowReview: allowReview
+      }
+    });
   } else {
     res.status(404);
     throw new Error("Product not Found");
