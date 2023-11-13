@@ -75,9 +75,10 @@ const productSchema = mongoose.Schema(
         }
       }
     ],
-    allowReview:{
-      type: Boolean,
-      default: false
+    sold:{
+      type: Number,
+      required: true,
+      default: 0
     }
   },
   {

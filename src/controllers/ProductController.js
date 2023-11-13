@@ -154,11 +154,28 @@ const getSingleProduct = asyncHandler(async (req, res) => {
       "orderItems.product": product.id
     }).populate("reviews.reviewId");
     if (order) allowReview = true;
-    product.allowReview = allowReview;
   }
 
+  await product.populate("reviews.reviewId");
+
   if (product) {
-    res.json({ product });
+    res.json({ product:{
+      productName: product.productName,
+      image: product.image,
+      description: product.description,
+      reviews: product.reviews,
+      rating: product.rating,
+      numReviews: product.numReviews,
+      price: product.price,
+      countInStock: product.countInStock,
+      categoryName: product.categoryName,
+      brandName: product.brandName,
+      status: product.status,
+      typeProduct: product.typeProduct,
+      sold: product.sold,
+      allowReview: allowReview
+      
+    } });
   } else {
     res.status(404);
     throw new Error("Product not Found");
