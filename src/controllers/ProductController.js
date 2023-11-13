@@ -210,7 +210,7 @@ const getSingleProduct = asyncHandler(async (req, res) => {
     const order = await Order.findOne({
       user: decodeToken.id,
       "orderItems.product": product.id
-    }).populate("reviews.reviewId");
+    });
     if (order) allowReview = true;
   }
 
@@ -221,6 +221,7 @@ const getSingleProduct = asyncHandler(async (req, res) => {
   if (product) {
     res.json({
       product: {
+        id: product.id,
         productName: product.productName,
         image: product.image,
         description: product.description,
