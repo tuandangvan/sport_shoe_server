@@ -170,6 +170,33 @@ const handlerTypeProduct = (product) => {
   return type;
 };
 
+const handlerTypeProduct2 = (product) => {
+  const typeProduct = product.typeProduct;
+
+  //filter color
+  const uniqueColors = new Set();
+  typeProduct.forEach((item) => {
+    if (item.color) {
+      uniqueColors.add(item.color);
+    }
+  });
+  const colorArray = Array.from(uniqueColors);
+
+  var type = [];
+
+  colorArray.forEach((itemColor) => {
+    var sizes = [];
+    typeProduct.forEach((item) => {
+      if (item.color == itemColor) {
+        var size = { size: item.size, quantity: item.quantity };
+        sizes.push(size);
+      }
+    });
+    type.push({color: itemColor, sizes: sizes});
+  });
+
+  return type;
+};
 // @desc    Get ID Single Product
 // @route   GET /api/products/:id
 // @access  Public
@@ -187,7 +214,7 @@ const getSingleProduct = asyncHandler(async (req, res) => {
     if (order) allowReview = true;
   }
 
-  const typeProduct = handlerTypeProduct(product);
+  const typeProduct = handlerTypeProduct2(product);
 
   await product.populate("reviews.reviewId");
 

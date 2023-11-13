@@ -29,7 +29,23 @@ const orderSchema = mongoose.Schema(
           type: mongoose.Schema.Types.ObjectId,
           required: true,
           ref: "Product"
-        }
+        },
+        typeProduct:[
+          {
+            size: {
+              type: String,
+              required: true
+            },
+            color: {
+              type: String,
+              required: true
+            },
+            quantity: {
+              type: Number,
+              required: true
+            }
+          }
+        ],
       }
     ],
     shippingAddress: {
