@@ -36,16 +36,30 @@ const getAllProduct = asyncHandler(async (req, res) => {
 const getAllProductByAdmin = asyncHandler(async (req, res) => {
   const pageSize = 8;
   const page = Number(req.query.pageNumber || 1);
+  const categoryName = req.query.categoryName
+    ? {
+        categoryName: req.query.categoryName
+      }
+    : {};
+
   const keyword = req.query.keyword
     ? {
-        name: {
+        productName: {
           $regex: req.query.keyword,
           $options: "i"
         }
       }
     : {};
-  const count = await Product.countDocuments({ ...keyword, status: "Active" });
-  const products = await Product.find({ ...keyword, status: "Active" })
+  const count = await Product.countDocuments({
+    ...keyword,
+    ...categoryName,
+    status: "Active"
+  });
+  const products = await Product.find({
+    ...keyword,
+    ...categoryName,
+    status: "Active"
+  })
     .limit(pageSize)
     .skip(pageSize * (page - 1))
     .sort({ _id: -1 });
@@ -60,7 +74,8 @@ const getAllProductByAdmin = asyncHandler(async (req, res) => {
 const deleteProductByAdmin = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id);
   if (product) {
-    await product.remove();
+    product.status = "Deleted";
+    await product.save();
     res.json({ message: "Product deleted" });
   } else {
     res.status(404);
