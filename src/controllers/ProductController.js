@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler";
 import Product from "~/models/productModel";
 import Category from "~/models/categoryModel";
+import Brand from "~/models/brandModel";
 import { verify } from "jsonwebtoken";
 import { env } from "~/config/environment";
 import Order from "~/models/orderModel";
@@ -77,14 +78,18 @@ const createProductByAdmin = asyncHandler(async (req, res) => {
     price,
     description,
     imageUrl,
-    category,
+    categoryName,
     brandName,
     typeProduct
   } = req.body;
-  const categoryFound = await Category.findById(category);
-
+  const categoryFound = await Category.findOne({ categoryName: categoryName });
   if (!categoryFound) {
     return res.status(400).json({ message: "Category Not Found" });
+  }
+
+  const brandFound = await Brand.findOne({ brandName: brandName });
+  if (!brandFound) {
+    return res.status(400).json({ message: "Brand Not Found" });
   }
 
   // ? Check Exist Product
@@ -94,14 +99,19 @@ const createProductByAdmin = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Product name already existed");
   } else {
+    const countInStock = typeProduct.reduce(
+      (totalQuantity, itemCurrent) => itemCurrent.quantity + totalQuantity,
+      0
+    );
     // Create New Value from Model
     const product = new Product({
       productName,
-      price,
-      categoryName: categoryFound.categoryName,
-      description,
       image: imageUrl,
-      brandName,
+      description,
+      price,
+      countInStock,
+      categoryName: categoryFound.categoryName,
+      brandName: brandFound.brandName,
       typeProduct,
       status: "Active"
     });
@@ -192,7 +202,7 @@ const handlerTypeProduct2 = (product) => {
         sizes.push(size);
       }
     });
-    type.push({color: itemColor, sizes: sizes});
+    type.push({ color: itemColor, sizes: sizes });
   });
 
   return type;
