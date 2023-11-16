@@ -7,6 +7,12 @@ import { multipleMongooseToObject } from "~/utils/mongooseUtils";
 // @access  Private
 
 const orderCreate = asyncHandler(async (req, res) => {
+  const orderItemsReq = req.body.orderItems;
+
+  console.log();
+
+
+
   const {
     orderItems,
     shippingAddress,

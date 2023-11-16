@@ -125,6 +125,12 @@ const createProductByAdmin = asyncHandler(async (req, res) => {
       0
     );
     // Create New Value from Model
+
+    // var countInStock = 0;
+    // typeProduct.forEach((item) => {
+    //   countInStock += item.quantity;
+    // });
+
     const product = new Product({
       productName,
       image: imageUrl,
@@ -374,6 +380,20 @@ const filteredProducts = asyncHandler(async (req, res) => {
     });
 });
 
+const findProductByKeyword = asyncHandler(async (req, res) => {
+  const keyword = req.query.keyword;
+
+  const product = await Product.find({
+    $or: [
+      { productName: { $regex: keyword, $options: "i" } },
+      { brandName: { $regex: keyword, $options: "i" } },
+      { categoryName: { $regex: keyword, $options: "i" } },
+      { description: { $regex: keyword, $options: "i" } }
+    ]
+  });
+  res.status(200).json({ product });
+});
+
 const productListCategory = asyncHandler(async (req, res) => {
   Product.distinct("category", {}, (err, categories) => {
     if (err) {
@@ -394,5 +414,6 @@ export const productController = {
   updateProductByAdmin,
   getAllProductByAdmin,
   productListCategory,
-  filteredProducts
+  filteredProducts,
+  findProductByKeyword
 };
