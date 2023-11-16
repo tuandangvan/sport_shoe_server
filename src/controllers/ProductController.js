@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler";
 import Product from "~/models/productModel";
 import Category from "~/models/categoryModel";
+import Brand from "~/models/brandModel";
 import { verify } from "jsonwebtoken";
 import { env } from "~/config/environment";
 import Order from "~/models/orderModel";
@@ -35,16 +36,30 @@ const getAllProduct = asyncHandler(async (req, res) => {
 const getAllProductByAdmin = asyncHandler(async (req, res) => {
   const pageSize = 8;
   const page = Number(req.query.pageNumber || 1);
+  const categoryName = req.query.categoryName
+    ? {
+        categoryName: req.query.categoryName
+      }
+    : {};
+
   const keyword = req.query.keyword
     ? {
-        name: {
+        productName: {
           $regex: req.query.keyword,
           $options: "i"
         }
       }
     : {};
-  const count = await Product.countDocuments({ ...keyword, status: "Active" });
-  const products = await Product.find({ ...keyword, status: "Active" })
+  const count = await Product.countDocuments({
+    ...keyword,
+    ...categoryName,
+    status: "Active"
+  });
+  const products = await Product.find({
+    ...keyword,
+    ...categoryName,
+    status: "Active"
+  })
     .limit(pageSize)
     .skip(pageSize * (page - 1))
     .sort({ _id: -1 });
@@ -59,7 +74,8 @@ const getAllProductByAdmin = asyncHandler(async (req, res) => {
 const deleteProductByAdmin = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id);
   if (product) {
-    await product.remove();
+    product.status = "Deleted";
+    await product.save();
     res.json({ message: "Product deleted" });
   } else {
     res.status(404);
@@ -81,11 +97,14 @@ const createProductByAdmin = asyncHandler(async (req, res) => {
     brandName,
     typeProduct
   } = req.body;
-
-  const categoryFound = await Category.findOne({ categoryName });
-
+  const categoryFound = await Category.findOne({ categoryName: categoryName });
   if (!categoryFound) {
     return res.status(400).json({ message: "Category Not Found" });
+  }
+
+  const brandFound = await Brand.findOne({ brandName: brandName });
+  if (!brandFound) {
+    return res.status(400).json({ message: "Brand Not Found" });
   }
 
   // ? Check Exist Product
@@ -95,21 +114,25 @@ const createProductByAdmin = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Product name already existed");
   } else {
+    const countInStock = typeProduct.reduce(
+      (totalQuantity, itemCurrent) => itemCurrent.quantity + totalQuantity,
+      0
+    );
     // Create New Value from Model
 
-    var countInStock = 0;
-    typeProduct.forEach((item) => {
-      countInStock += item.quantity;
-    });
+    // var countInStock = 0;
+    // typeProduct.forEach((item) => {
+    //   countInStock += item.quantity;
+    // });
 
     const product = new Product({
       productName,
+      image: imageUrl,
+      description,
       price,
       countInStock,
       categoryName: categoryFound.categoryName,
-      description,
-      image: imageUrl,
-      brandName,
+      brandName: brandFound.brandName,
       typeProduct,
       status: "Active"
     });

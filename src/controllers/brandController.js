@@ -62,7 +62,7 @@ const updateBrandByAdmin = asyncHandler(async (req, res) => {
   const brand = await Brand.findById(req.params.id);
   const { brandName, imageUrl, origin } = req.body;
   const brandNameExist = await Brand.findOne({ brandName: brandName });
-  if (brandNameExist) {
+  if (brandNameExist && brandNameExist._id.toString() != req.params.id) {
     res.status(400).json({ message: "Brand already exists" });
   }
   if (brand) {
