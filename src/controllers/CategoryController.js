@@ -7,6 +7,7 @@ import Product from "~/models/productModel";
 // ?@desc    ADMIN | GET ALL CATEGORIES WITHOUT SEARCH AND PAGINATION
 // ?@route   GET /api/categories/
 // ?@access  Private
+
 const getAllCategories = asyncHandler(async (req, res) => {
   const categories = await Category.find({ status: "Active" });
 
