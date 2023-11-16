@@ -68,6 +68,9 @@ const START_SERVER = () => {
   app.use(errorHandler);
 
   app.use(morgan("combined"));
+  app.get("/api/config/paypal", (req, res) => {
+    res.send(process.env.PAYPAL_CLIENT_ID);
+  });
 
   const PORT = env.APP_PORT || 1000;
 

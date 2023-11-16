@@ -9,6 +9,7 @@ import { userRouter } from "~/routes/v1/userRoutes";
 import { brandRouter } from "~/routes/v1/brandRoutes";
 import { uploadRoute } from "~/routes/v1/uploadRoute";
 import ImportData from "~/config/importData";
+import { paymentRoute } from "./paymentRoutes";
 
 const router = express.Router();
 
@@ -29,5 +30,6 @@ router.use("/orders", orderRouter);
 router.use("/products", productRouter);
 router.use("/users", userRouter);
 router.use("/upload", uploadRoute);
+router.use("/config", paymentRoute);
 
 export const APIs_V1 = router;
