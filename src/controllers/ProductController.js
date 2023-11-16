@@ -77,11 +77,12 @@ const createProductByAdmin = asyncHandler(async (req, res) => {
     price,
     description,
     imageUrl,
-    category,
+    categoryName,
     brandName,
     typeProduct
   } = req.body;
-  const categoryFound = await Category.findById(category);
+
+  const categoryFound = await Category.findOne({ categoryName });
 
   if (!categoryFound) {
     return res.status(400).json({ message: "Category Not Found" });
@@ -95,9 +96,16 @@ const createProductByAdmin = asyncHandler(async (req, res) => {
     throw new Error("Product name already existed");
   } else {
     // Create New Value from Model
+
+    var countInStock = 0;
+    typeProduct.forEach((item) => {
+      countInStock += item.quantity;
+    });
+
     const product = new Product({
       productName,
       price,
+      countInStock,
       categoryName: categoryFound.categoryName,
       description,
       image: imageUrl,
@@ -118,18 +126,22 @@ const createProductByAdmin = asyncHandler(async (req, res) => {
 });
 
 const updateProductByAdmin = asyncHandler(async (req, res) => {
-  const { productName, price, description, image, categoryId } = req.body;
-  const product = await Product.findById(req.params.id).populate("category");
+  const { productName, price, description, image, categoryName, typeProduct } =
+    req.body;
+  const product = await Product.findById(req.params.id).populate(
+    "categoryName"
+  );
 
   if (product) {
     // if (categoryId) {
-    let categoryFound = await Category.findOne({ name: req.body.category });
+    let categoryFound = await Category.findOne({ categoryName });
     // * Update by any object
     product.productName = productName || product.productName;
     product.price = price || product.price;
     product.description = description || product.description;
     product.image = image || product.image;
     product.categoryName = categoryFound.categoryName || product.categoryName;
+    product.typeProduct = typeProduct || product.typeProduct;
     const updateProduct = await product.save();
     res.status(201).json(updateProduct);
     // }
@@ -192,7 +204,7 @@ const handlerTypeProduct2 = (product) => {
         sizes.push(size);
       }
     });
-    type.push({color: itemColor, sizes: sizes});
+    type.push({ color: itemColor, sizes: sizes });
   });
 
   return type;
@@ -327,6 +339,20 @@ const filteredProducts = asyncHandler(async (req, res) => {
     });
 });
 
+const findProductByKeyword = asyncHandler(async (req, res) => {
+  const keyword = req.query.keyword;
+
+  const product = await Product.find({
+    $or: [
+      { productName: { $regex: keyword, $options: "i" } },
+      { brandName: { $regex: keyword, $options: "i" } },
+      { categoryName: { $regex: keyword, $options: "i" } },
+      { description: { $regex: keyword, $options: "i" } }
+    ]
+  });
+  res.status(200).json({product});
+});
+
 const productListCategory = asyncHandler(async (req, res) => {
   Product.distinct("category", {}, (err, categories) => {
     if (err) {
@@ -347,5 +373,6 @@ export const productController = {
   updateProductByAdmin,
   getAllProductByAdmin,
   productListCategory,
-  filteredProducts
+  filteredProducts,
+  findProductByKeyword
 };

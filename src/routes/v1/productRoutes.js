@@ -54,4 +54,6 @@ route.post("/search", productController.filteredProducts);
 
 // [GET] ALL PRODUCT
 route.get("/", productController.getAllProduct);
+
+route.post("/find", productController.findProductByKeyword);
 export const productRouter = route;

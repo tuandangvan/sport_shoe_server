@@ -13,10 +13,10 @@ const orderSchema = mongoose.Schema(
           type: String,
           required: true
         },
-        qty: {
-          type: Number,
-          required: true
-        },
+        // qty: {
+        //   type: Number,
+        //   required: true
+        // },
         image: {
           type: String,
           required: true
@@ -30,22 +30,20 @@ const orderSchema = mongoose.Schema(
           required: true,
           ref: "Product"
         },
-        typeProduct:[
-          {
-            size: {
-              type: String,
-              required: true
-            },
-            color: {
-              type: String,
-              required: true
-            },
-            quantity: {
-              type: Number,
-              required: true
-            }
+        typeProduct: {
+          size: {
+            type: String,
+            required: true
+          },
+          color: {
+            type: String,
+            required: true
+          },
+          quantity: {
+            type: Number,
+            required: true
           }
-        ],
+        }
       }
     ],
     shippingAddress: {
