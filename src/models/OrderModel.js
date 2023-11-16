@@ -31,11 +31,11 @@ const orderSchema = mongoose.Schema(
           ref: "Product"
         },
         typeProduct: {
-          size: {
+          color: {
             type: String,
             required: true
           },
-          color: {
+          size: {
             type: String,
             required: true
           },

@@ -6,15 +6,30 @@ import { multipleMongooseToObject } from "~/utils/mongooseUtils";
 // @route   POST /api/orders
 // @access  Private
 
+
+const handlerOrderItems = (orderItemsReq) => {
+  var orderItems = [];
+  orderItemsReq.forEach((item)=>{
+    const product = item.product;
+    var orderItem = {
+      name: product.productName,
+      image: product.image,
+      price: product.price,
+      product: product.id,
+      typeProduct: {
+        color: item.typeSelect.color,
+        size: item.typeSelect.size,
+        quantity: item.qty
+      }
+    };
+    orderItems.push(orderItem);
+  })
+  return orderItems;
+};
+
 const orderCreate = asyncHandler(async (req, res) => {
-  const orderItemsReq = req.body.orderItems;
-
-  console.log();
-
-
-
+  const orderItems = handlerOrderItems(req.body.orderItems);
   const {
-    orderItems,
     shippingAddress,
     paymentMethod,
     itemsPrice,
