@@ -50,10 +50,11 @@ const userAuth = asyncHandler(async (req, res) => {
 // @route   POST /api/users/refreshtoken
 // @access  Public
 const refreshToken = asyncHandler(async (req, res) => {
-  const { refreshToken, email } = req.body;
+  const { refreshToken } = req.body;
 
-  const user = await User.findOne({ email });
+
   const decoded = jwt.verify(refreshToken, env.JWT_SECRET);
+  const user = await User.findOne({ _id: decoded.id });
 
   if (
     user &&
