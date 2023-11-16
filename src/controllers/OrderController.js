@@ -1,5 +1,7 @@
 import asyncHandler from "express-async-handler";
 import Order from "~/models/orderModel";
+import product from "~/models/productModel";
+import Product from "~/models/productModel";
 import { multipleMongooseToObject } from "~/utils/mongooseUtils";
 
 // @desc    Create Order
@@ -51,6 +53,43 @@ const orderCreate = asyncHandler(async (req, res) => {
       shippingPrice,
       taxPrice,
       totalPrice
+    });
+
+    orderItems.forEach(async(item) => {
+      const typeProduct = await product.findOne(
+        {
+          _id: item.product,
+          'typeProduct.color': item.typeProduct.color,
+          'typeProduct.size': item.typeProduct.size,
+        },
+        {
+          'typeProduct.$': 1, // Chỉ lấy mảng typeProduct chứa color và size cần tìm
+          _id: 0, // Không lấy id
+        });
+        
+        const quantity = typeProduct.typeProduct[0].quantity;
+
+      const result = await Product.updateOne(
+        {
+          _id: item.product,
+          'typeProduct.color': item.typeProduct.color,
+          'typeProduct.size': item.typeProduct.size,
+        },
+        {
+          $set: {
+            'typeProduct.$.quantity': quantity - item.typeProduct.quantity
+          },
+        }
+      );
+
+      const product2 = await Product.findOne({_id: item.product});
+      const countInStock = product2.typeProduct.reduce(
+        (totalQuantity, itemCurrent) => itemCurrent.quantity + totalQuantity,
+        0
+      );
+      product2.countInStock = countInStock;
+      await product2.save();
+
     });
 
     const createOrder = await order.save();
