@@ -13,10 +13,6 @@ const orderSchema = mongoose.Schema(
           type: String,
           required: true
         },
-        // qty: {
-        //   type: Number,
-        //   required: true
-        // },
         image: {
           type: String,
           required: true
@@ -107,10 +103,10 @@ const orderSchema = mongoose.Schema(
     paidAt: {
       type: Date
     },
-    isDelivered: {
-      type: Boolean,
+    status: {
+      type: Number,
       required: true,
-      default: false
+      default: 0
     },
     deliveredAt: {
       type: Date

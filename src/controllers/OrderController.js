@@ -8,10 +8,9 @@ import { multipleMongooseToObject } from "~/utils/mongooseUtils";
 // @route   POST /api/orders
 // @access  Private
 
-
 const handlerOrderItems = (orderItemsReq) => {
   var orderItems = [];
-  orderItemsReq.forEach((item)=>{
+  orderItemsReq.forEach((item) => {
     const product = item.product;
     var orderItem = {
       name: product.productName,
@@ -25,7 +24,7 @@ const handlerOrderItems = (orderItemsReq) => {
       }
     };
     orderItems.push(orderItem);
-  })
+  });
   return orderItems;
 };
 
@@ -55,41 +54,41 @@ const orderCreate = asyncHandler(async (req, res) => {
       totalPrice
     });
 
-    orderItems.forEach(async(item) => {
+    orderItems.forEach(async (item) => {
       const typeProduct = await product.findOne(
         {
           _id: item.product,
-          'typeProduct.color': item.typeProduct.color,
-          'typeProduct.size': item.typeProduct.size,
+          "typeProduct.color": item.typeProduct.color,
+          "typeProduct.size": item.typeProduct.size
         },
         {
-          'typeProduct.$': 1, // Chỉ lấy mảng typeProduct chứa color và size cần tìm
-          _id: 0, // Không lấy id
-        });
-        
-        const quantity = typeProduct.typeProduct[0].quantity;
+          "typeProduct.$": 1, // Chỉ lấy mảng typeProduct chứa color và size cần tìm
+          _id: 0 // Không lấy id
+        }
+      );
+
+      const quantity = typeProduct.typeProduct[0].quantity;
 
       const result = await Product.updateOne(
         {
           _id: item.product,
-          'typeProduct.color': item.typeProduct.color,
-          'typeProduct.size': item.typeProduct.size,
+          "typeProduct.color": item.typeProduct.color,
+          "typeProduct.size": item.typeProduct.size
         },
         {
           $set: {
-            'typeProduct.$.quantity': quantity - item.typeProduct.quantity
-          },
+            "typeProduct.$.quantity": quantity - item.typeProduct.quantity
+          }
         }
       );
 
-      const product2 = await Product.findOne({_id: item.product});
+      const product2 = await Product.findOne({ _id: item.product });
       const countInStock = product2.typeProduct.reduce(
         (totalQuantity, itemCurrent) => itemCurrent.quantity + totalQuantity,
         0
       );
       product2.countInStock = countInStock;
       await product2.save();
-
     });
 
     const createOrder = await order.save();
@@ -131,6 +130,24 @@ const getAllOrderByAdmin = asyncHandler(async (req, res) => {
   }
 });
 
+const getAllOrderByStatusSorting = asyncHandler(async (req, res) => {
+  console.log(req.query.status);
+  const getAllOrderByQuerySorting = await Order.find({
+    status: req.query.status
+  })
+    .sort({ _id: -1 })
+    .populate("user", "id name email");
+  if (getAllOrderByQuerySorting) {
+    res.json({
+      size: getAllOrderByQuerySorting.length,
+      data: getAllOrderByQuerySorting
+    });
+  } else {
+    res.status(404);
+    throw new Error("Order not Found");
+  }
+});
+
 // @desc    update order is paid & not paid
 // @route   PUT /api/orders/:id/pay
 // @access  Private
@@ -159,13 +176,16 @@ const updateOrderPaid = asyncHandler(async (req, res) => {
 // @route   PUT /api/orders/:id/delivered
 // @access  Private
 
-const updateDeliveredOrder = asyncHandler(async (req, res) => {
-  const order = await Order.findById(req.params.id);
+const updateStatusOrder = asyncHandler(async (req, res) => {
+  const orderId = req.query.id;
+  const status = req.query.status;
+  const order = await Order.findById(orderId);
 
   if (order) {
-    order.isDelivered = true;
-    order.deliveredAt = Date.now();
-
+    order.status = status;
+    if (status === 2) {
+      order.deliveredAt = Date.now();
+    }
     const updateOrder = await order.save();
     res.json(updateOrder);
   } else {
@@ -230,7 +250,8 @@ export const orderController = {
   updateOrderPaid,
   getOrderByUser,
   getAllOrderByAdmin,
-  updateDeliveredOrder,
+  getAllOrderByStatusSorting,
+  updateStatusOrder,
   deleteOrderId,
   deleteOrderIdForce,
   restoreOrderById

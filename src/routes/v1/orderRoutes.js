@@ -12,6 +12,13 @@ route.get(
   orderController.getAllOrderByAdmin
 );
 
+route.get(
+  "/sort-by-status",
+  authMiddleware.protect,
+  authMiddleware.admin,
+  orderController.getAllOrderByStatusSorting
+);
+
 // GET ORDER BY ID
 route.get("/:id", authMiddleware.protect, orderController.getOrderById);
 
@@ -20,9 +27,10 @@ route.put("/:id/pay", authMiddleware.protect, orderController.updateOrderPaid);
 
 // ? CHECK ORDER IS DELIVERED BY ADMIN
 route.put(
-  "/:id/delivered",
+  "/change-status",
   authMiddleware.protect,
-  orderController.updateDeliveredOrder
+  authMiddleware.admin,
+  orderController.updateStatusOrder
 );
 
 // DELETE ORDER BY ID | ADMIN
@@ -30,15 +38,14 @@ route.put(
 route.delete("/:id", authMiddleware.protect, orderController.deleteOrderId);
 
 // DELETE FORCE BY ID | ADMIN
-route.delete(
-  "/:id/force",
-  authMiddleware.protect,
-  authMiddleware.admin,
-  orderController.deleteOrderIdForce
-);
+// route.delete(
+//   "/:id/force",
+//   authMiddleware.protect,
+//   authMiddleware.admin,
+//   orderController.deleteOrderIdForce
+// );
 
 // RESTORE ORDER BY ID | ADMIN
-
 route.patch(
   "/:id/restore",
   authMiddleware.protect,

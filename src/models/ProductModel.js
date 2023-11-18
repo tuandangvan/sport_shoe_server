@@ -57,7 +57,8 @@ const productSchema = mongoose.Schema(
     },
     status: {
       type: String,
-      required: true
+      required: true,
+      default: "Active"
     },
     typeProduct: [
       {
@@ -75,7 +76,7 @@ const productSchema = mongoose.Schema(
         }
       }
     ],
-    sold:{
+    sold: {
       type: Number,
       required: true,
       default: 0
