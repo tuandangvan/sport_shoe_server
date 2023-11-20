@@ -50,6 +50,7 @@ route.post(
   productController.createProductReview
 );
 
+// Filter product on Client
 route.post("/search", productController.filteredProducts);
 
 // [GET] ALL PRODUCT

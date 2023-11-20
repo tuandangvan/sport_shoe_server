@@ -352,18 +352,40 @@ const filteredProducts = asyncHandler(async (req, res) => {
   let skip = parseInt(req.body.skip);
   let findArgs = {};
 
+  // for (let key in req.body.filters) {
+  //   if (req.body.filters[key].length > 0) {
+  //     if (key === "price") {
+  //       findArgs[key] = {
+  //         $gte: req.body.filters[key][0],
+  //         $lte: req.body.filters[key][1]
+  //       };
+  //     } else {
+  //       findArgs[key] = req.body.filters[key];
+  //     }
+  //   }
+  // }
+
   for (let key in req.body.filters) {
     if (req.body.filters[key].length > 0) {
-      if (key === "price") {
-        findArgs[key] = {
-          $gte: req.body.filters[key][0],
-          $lte: req.body.filters[key][1]
-        };
-      } else {
-        findArgs[key] = req.body.filters[key];
+      switch (key) {
+        case "price":
+          findArgs[key] = {
+            $gte: req.body.filters[key][0],
+            $lte: req.body.filters[key][1]
+          };
+          break;
+        case "categoryName":
+          findArgs[key] = { $in: req.body.filters[key] };
+          break;
+        case "brandName":
+          findArgs[key] = { $in: req.body.filters[key] };
+          break;
+        default:
+          break;
       }
     }
   }
+  findArgs = { $and: [{ ...findArgs }] };
   Product.find(findArgs)
     .skip(skip)
     .limit(limit)
