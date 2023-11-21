@@ -52,7 +52,6 @@ const userAuth = asyncHandler(async (req, res) => {
 const refreshToken = asyncHandler(async (req, res) => {
   const { refreshToken } = req.body;
 
-
   const decoded = jwt.verify(refreshToken, env.JWT_SECRET);
   const user = await User.findOne({ _id: decoded.id });
 
@@ -269,6 +268,37 @@ const getAllUsersByAdmin = asyncHandler(async (req, res) => {
   res.json({ users, page, pages: Math.ceil(count / pageSize) });
 });
 
+const generatePassword = (length) => {
+  const charset =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789^&%*#@";
+  let password = "";
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * charset.length);
+    password += charset[randomIndex];
+  }
+
+  return password;
+};
+
+const forgotPassword = asyncHandler(async (req, res) => {
+  const email = req.body.email;
+  const user = await User.findOne({ email });
+  if (!user) {
+    res.status(404);
+    throw new Error("Email Not Found");
+  } else {
+    const newPassword = generatePassword(8);
+    user.password = newPassword;
+    await user.save();
+    emailSender.sendForgotPassword({ email, newPassword });
+    res.status(200).json({
+      message: "An email has been sent"
+    });
+  }
+  
+});
+
 export const userController = {
   userAuth,
   userRegister,
@@ -278,5 +308,6 @@ export const userController = {
   updateUserProfile,
   getAllUsers,
   getAllUsersByAdmin,
-  updateAvatar
+  updateAvatar,
+  forgotPassword
 };
