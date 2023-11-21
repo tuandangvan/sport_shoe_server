@@ -388,4 +388,35 @@ const sendContact = ({ name, email, subject, message }) => {
   };
   sendMailTemplate(options);
 };
-export const emailSender = { sendContact, sendConfirmMail };
+
+// SEND EMAIL CONTACT
+const sendForgotPassword = ({email, newPassword }) => {
+    const options = {
+      from: `🛍️ User from Sport Shoe Shop`,
+      to: email,
+      subject: "Forgot Password",
+      html: `
+          <div style="width: 100%; background-color: #f3f9ff; padding: 5rem 0">
+          <div style="max-width: 700px; background-color: white; margin: 0 auto">
+            <div style="width: 100%; padding: 20px 0; background-color: black">
+            <a href="${env.CLIENT_URL}"><img
+                src="https://res.cloudinary.com/dfaejacdn/image/upload/v1667615733/Dan-Logo/logoLight-Didan_zam0dg.png"
+                style="width: 100%; height: 70px; object-fit: contain"
+              /></a>
+  
+            </div>
+            <div style="width: 100%; gap: 10px; padding: 30px 0; display: grid">
+              <h2 style="font-weight: 800; font-size: 1.5rem; padding: 0 30px">
+                Dưới đây là mật khẩu mới của bạn:
+              </h2>
+              <div style="font-size: .8rem; margin: 0 30px">
+                <p>Mật khẩu mới: <b>${newPassword}</b></p>
+              </div>
+            </div>
+          </div>
+        </div>
+          `
+    };
+    sendMailTemplate(options);
+  };
+export const emailSender = { sendContact, sendConfirmMail, sendForgotPassword };
