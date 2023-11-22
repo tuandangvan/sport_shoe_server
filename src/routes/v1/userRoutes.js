@@ -42,6 +42,8 @@ router.get(
   userController.getAllUsers
 );
 
+router.post("/forgot_password", userController.forgotPassword);
+
 router.post("/refresh_token", userController.refreshToken);
 
 export const userRouter = router;

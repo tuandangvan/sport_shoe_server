@@ -131,7 +131,6 @@ const getAllOrderByAdmin = asyncHandler(async (req, res) => {
 });
 
 const getAllOrderByStatusSorting = asyncHandler(async (req, res) => {
-  console.log(req.query.status);
   const getAllOrderByQuerySorting = await Order.find({
     status: req.query.status
   })
