@@ -183,7 +183,7 @@ const updateStatusOrder = asyncHandler(async (req, res) => {
 
   if (order) {
     order.status = status;
-    if (status === 2) {
+    if (parseInt(status) === 2) {
       order.deliveredAt = Date.now();
     }
     const updateOrder = await order.save();
