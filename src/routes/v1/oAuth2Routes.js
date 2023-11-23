@@ -1,5 +1,6 @@
 import express from "express";
 import passport from "passport";
+import { env } from "~/config/environment";
 
 const route = express.Router();
 
@@ -23,7 +24,7 @@ route.get("/login/failed", (req, res) => {
 
 route.get("/logout", (req, res) => {
   req.logout();
-  res.redirect(process.env.CLIENT_URL_VERCEL);
+  res.redirect(env.CLIENT_URL_VERCEL);
 });
 
 route.get("/google", passport.authenticate("google", { scope: ["profile"] }));
@@ -31,8 +32,8 @@ route.get("/google", passport.authenticate("google", { scope: ["profile"] }));
 route.get(
   "/google/callback",
   passport.authenticate("google", {
-    successRedirect: process.env.CLIENT_URL_VERCEL,
-    failureRedirect: `${process.env.CLIENT_URL_VERCEL}/login`
+    successRedirect: env.CLIENT_URL_VERCEL,
+    failureRedirect: `${env.CLIENT_URL_VERCEL}/login`
   })
 );
 
@@ -45,8 +46,8 @@ route.get(
 route.get(
   "/github/callback",
   passport.authenticate("github", {
-    successRedirect: process.env.CLIENT_URL_VERCEL,
-    failureRedirect: `${process.env.CLIENT_URL_VERCEL}/login`
+    successRedirect: env.CLIENT_URL_VERCEL,
+    failureRedirect: `${env.CLIENT_URL_VERCEL}/login`
   })
 );
 
@@ -58,8 +59,8 @@ route.get(
 route.get(
   "/facebook/callback",
   passport.authenticate("facebook", {
-    successRedirect: process.env.CLIENT_URL_VERCEL,
-    failureRedirect: `${process.env.CLIENT_URL_VERCEL}/login`
+    successRedirect: env.CLIENT_URL_VERCEL,
+    failureRedirect: `${env.CLIENT_URL_VERCEL}/login`
   })
 );
 export const oAuth2Router = route;

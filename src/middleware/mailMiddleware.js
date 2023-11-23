@@ -27,6 +27,7 @@ const sendMailTemplate = (options) => {
 };
 
 const sendConfirmMail = ({ email, message }) => {
+  const linkRequest = `http://localhost:3000/active_account/?email=${email}&token=${message}`;
   const options = {
     from: `🛍️ Sport Shoe Shop`,
     to: email,
@@ -198,7 +199,7 @@ const sendConfirmMail = ({ email, message }) => {
                                                     style="border-radius: 6px"
                                             >
                                                 <a
-                                                        href="${message}"
+                                                        href="${linkRequest}"
                                                         target="_blank"
                                                         style="
                                 display: inline-block;
@@ -390,12 +391,12 @@ const sendContact = ({ name, email, subject, message }) => {
 };
 
 // SEND EMAIL CONTACT
-const sendForgotPassword = ({email, newPassword }) => {
-    const options = {
-      from: `🛍️ User from Sport Shoe Shop`,
-      to: email,
-      subject: "Forgot Password",
-      html: `
+const sendForgotPassword = ({ email, newPassword }) => {
+  const options = {
+    from: `🛍️ User from Sport Shoe Shop`,
+    to: email,
+    subject: "Forgot Password",
+    html: `
           <div style="width: 100%; background-color: #f3f9ff; padding: 5rem 0">
           <div style="max-width: 700px; background-color: white; margin: 0 auto">
             <div style="width: 100%; padding: 20px 0; background-color: black">
@@ -416,7 +417,7 @@ const sendForgotPassword = ({email, newPassword }) => {
           </div>
         </div>
           `
-    };
-    sendMailTemplate(options);
   };
+  sendMailTemplate(options);
+};
 export const emailSender = { sendContact, sendConfirmMail, sendForgotPassword };

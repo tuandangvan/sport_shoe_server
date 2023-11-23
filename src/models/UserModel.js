@@ -40,7 +40,11 @@ const userSchema = mongoose.Schema(
       type: String,
       required: false
     },
-    gender:{
+    expiredCodeConfirmMail: {
+      type: Date,
+      required: false
+    },
+    gender: {
       type: String,
       default: "Others"
     },

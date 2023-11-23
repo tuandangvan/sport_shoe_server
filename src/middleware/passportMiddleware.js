@@ -1,5 +1,6 @@
-import User from "../src/models/UserModel";
+import User from "~/models/userModel";
 import passport from "passport";
+import { env } from "~/config/environment";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as GitHubStrategy } from "passport-github2";
 import { Strategy as FacebookStrategy } from "passport-facebook";
@@ -8,17 +9,18 @@ import { Strategy as FacebookStrategy } from "passport-facebook";
 passport.use(
   new GoogleStrategy(
     {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: `${process.env.REACT_APP_URL_SERVER}/auth/google/callback`
+      clientID: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+      callbackURL: `${env.REACT_APP_URL_SERVER}/auth/google/callback`
     },
     (accessToken, refreshToken, profile, done) => {
       // check if user already exists in our db
       User.findOrCreate(
         {
           name: profile.displayName,
-          googleId: profile.id
-          // token: generateToken(profile.id),
+          googleId: profile.id,
+          avatarUrl: profile.photos[0].value
+          // email: profile?.emails[0].value
         },
         (err, user) => {
           return done(err, user);
@@ -30,9 +32,9 @@ passport.use(
 passport.use(
   new GitHubStrategy(
     {
-      clientID: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      callbackURL: `${process.env.REACT_APP_URL_SERVER}/auth/github/callback`
+      clientID: env.GITHUB_CLIENT_ID,
+      clientSecret: env.GITHUB_CLIENT_SECRET,
+      callbackURL: `${env.REACT_APP_URL_SERVER}/auth/github/callback`
     },
     (accessToken, refreshToken, profile, done) => {
       // check if user already exists in our db
@@ -52,9 +54,9 @@ passport.use(
 passport.use(
   new FacebookStrategy(
     {
-      clientID: process.env.FACEBOOK_APP_ID,
-      clientSecret: process.env.FACEBOOK_APP_SECRET,
-      callbackURL: `${process.env.REACT_APP_URL_SERVER}/auth/facebook/callback`
+      clientID: env.FACEBOOK_APP_ID,
+      clientSecret: env.FACEBOOK_APP_SECRET,
+      callbackURL: `${env.REACT_APP_URL_SERVER}/auth/facebook/callback`
     },
     (accessToken, refreshToken, profile, done) => {
       // check if user already exists in our db
@@ -77,3 +79,4 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((user, done) => {
   done(null, user);
 });
+export default passport;

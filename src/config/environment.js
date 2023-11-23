@@ -1,12 +1,10 @@
 import "dotenv/config";
 
 export const env = {
-  MONGODB_URI: process.env.MONGODB_URI,
-  DATABASE_NAME: process.env.DATABASE_NAME,
-
   APP_HOST: process.env.APP_HOST,
   APP_PORT: process.env.APP_PORT,
-
+  MONGODB_URI: process.env.MONGODB_URI,
+  DATABASE_NAME: process.env.DATABASE_NAME,
   AUTHOR: process.env.AUTHOR,
   JWT_SECRET: process.env.JWT_SECRET,
 
@@ -20,5 +18,21 @@ export const env = {
   SMTP_HOST: process.env.SMTP_HOST,
   SMTP_TYPE: process.env.SMTP_TYPE,
   SMTP_PORT: process.env.SMTP_PORT,
-  EMAIL_SENDER: process.env.EMAIL_SENDER
+  EMAIL_SENDER: process.env.EMAIL_SENDER,
+
+  PAYPAL_CLIENT_ID: process.env.PAYPAL_CLIENT_ID,
+  CLIENT_URL: process.env.CLIENT_URL,
+  ADMIN_URL: process.env.ADMIN_URL,
+  ADMIN_FIAU_URL: process.env.ADMIN_FIAU_URL,
+  CLIENT_URL_VERCEL: process.env.CLIENT_URL_VERCEL,
+  ADMIN_URL_VERCEL: process.env.ADMIN_URL_VERCEL,
+  REACT_APP_URL_SERVER: process.env.REACT_APP_URL_SERVER,
+
+  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+  GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
+  GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
+  FACEBOOK_APP_ID: process.env.FACEBOOK_APP_ID,
+  FACEBOOK_APP_SECRET: process.env.FACEBOOK_APP_SECRET,
+  COOKIE_SESSION_KEYS: process.env.COOKIE_SESSION_KEYS
 };
