@@ -1,8 +1,8 @@
 import asyncHandler from "express-async-handler";
-import Order from "~/models/orderModel";
-import product from "~/models/productModel";
-import Product from "~/models/productModel";
-import { multipleMongooseToObject } from "~/utils/mongooseUtils";
+import Order from "../models/OrderModel.js";
+import product from "../models/ProductModel.js";
+import Product from "../models/ProductModel.js";
+import { multipleMongooseToObject } from "../utils/mongooseUtils";
 
 // @desc    Create Order
 // @route   POST /api/orders

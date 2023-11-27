@@ -1,11 +1,11 @@
 import asyncHandler from "express-async-handler";
-import Product from "~/models/productModel";
-import Category from "~/models/categoryModel";
-import Brand from "~/models/brandModel";
+import Product from "../models/ProductModel.js";
+import Category from "../models/CategoryModel.js";
+import Brand from "../models/brandModel.js";
 import { verify } from "jsonwebtoken";
-import { env } from "~/config/environment";
-import Order from "~/models/orderModel";
-import reviewModel from "~/models/reviewModel";
+import { env } from "../config/environment.js";
+import Order from "../models/OrderModel.js";
+import reviewModel from "../models/reviewModel.js";
 
 // @desc    get all product
 // @route   GET /api/products/

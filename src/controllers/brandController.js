@@ -1,5 +1,5 @@
 import asyncHandler from "express-async-handler";
-import Brand from "~/models/brandModel";
+import Brand from "../models/brandModel.js";
 
 // ?@desc    ADMIN | GET ALL BRAND WITHOUT SEARCH AND PAGINATION
 // ?@route   GET /api/brands/

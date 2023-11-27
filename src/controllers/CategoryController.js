@@ -1,8 +1,8 @@
 import asyncHandler from "express-async-handler";
-import Category from "~/models/categoryModel";
-import Product from "~/models/productModel";
+import Category from "../models/CategoryModel.js";
+import Product from "../models/ProductModel.js";
 // import slugify from "slugify";
-// import Product from "~/models/productModel";
+// import Product from "../models/productModel";
 
 // ?@desc    ADMIN | GET ALL CATEGORIES WITHOUT SEARCH AND PAGINATION
 // ?@route   GET /api/categories/

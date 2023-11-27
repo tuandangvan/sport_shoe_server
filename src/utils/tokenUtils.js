@@ -1,4 +1,4 @@
-import { env } from "~/config/environment";
+import { env } from "../config/environment.js";
 import jwt from "jsonwebtoken";
 const generateAccessToken = (id) => {
   return jwt.sign({ id }, env.JWT_SECRET, {

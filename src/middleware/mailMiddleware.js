@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import { env } from "~/config/environment";
+import { env } from "../config/environment.js";
 
 // VERIFY EMAIL
 

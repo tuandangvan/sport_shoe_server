@@ -1,6 +1,6 @@
-import User from "~/models/userModel";
+import User from "../models/UserModel.js";
 import passport from "passport";
-import { env } from "~/config/environment";
+import { env } from "../config/environment.js";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as GitHubStrategy } from "passport-github2";
 import { Strategy as FacebookStrategy } from "passport-facebook";

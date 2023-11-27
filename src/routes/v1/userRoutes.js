@@ -1,7 +1,7 @@
 import express from "express";
-import { authMiddleware } from "~/middleware/authMiddleware";
-import { userController } from "~/controllers/userController";
-import fileImage from "~/utils/uploadCloudinary";
+import { authMiddleware } from "../../middleware/authMiddleware.js";
+import { userController } from "../../controllers/UserController.js";
+import fileImage from "../../utils/uploadCloudinary.js";
 
 const router = express.Router();
 // [POST] LOGIN

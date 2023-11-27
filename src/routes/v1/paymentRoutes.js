@@ -1,5 +1,5 @@
 import express from "express";
-import { env } from "~/config/environment";
+import { env } from "../../config/environment.js";
 
 const router = express.Router();
 // [POST] LOGIN

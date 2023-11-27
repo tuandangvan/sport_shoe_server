@@ -1,12 +1,12 @@
 import express from "express";
-import User from "~/models/userModel";
-import { users } from "~/data/userData";
-import Product from "~/models/productModel";
-import Brand from "~/models/brandModel";
-import Category from "~/models/categoryModel";
-import { products } from "~/data/productData";
-import { categories } from "~/data/categoryData";
-import { brands } from "~/data/brandData";
+import User from "../models/UserModel.js";
+import { users } from "../data/userData.js";
+import Product from "../models/ProductModel.js";
+import Brand from "../models/brandModel.js";
+import Category from "../models/CategoryModel.js";
+import { products } from "../data/productData.js";
+import { categories } from "../data/categoryData.js";
+import { brands } from "../data/brandData.js";
 import asyncHandler from "express-async-handler";
 
 const ImportData = express.Router();

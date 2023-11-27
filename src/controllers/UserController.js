@@ -1,9 +1,9 @@
 import asyncHandler from "express-async-handler";
-import User from "~/models/userModel";
-import { generateToken } from "~/utils/tokenUtils";
-import { env } from "~/config/environment";
+import User from "../models/UserModel.js";
+import { generateToken } from "../utils/tokenUtils.js";
+import { env } from "../config/environment.js";
 import jwt from "jsonwebtoken";
-import { emailSender } from "~/middleware/mailMiddleware";
+import { emailSender } from "../middleware/mailMiddleware.js";
 
 // @desc    Auth user & get a token
 // @route   POST /api/users/login

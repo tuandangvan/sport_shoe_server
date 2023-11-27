@@ -1,5 +1,5 @@
 import asyncHandler from "express-async-handler";
-import { emailSender } from "~/middleware/mailMiddleware";
+import { emailSender } from "../middleware/mailMiddleware.js";
 
 const sendContact = asyncHandler(async (req, res) => {
   try {

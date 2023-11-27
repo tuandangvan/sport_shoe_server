@@ -1,16 +1,16 @@
 /* eslint-disable no-console*/
 import express from "express";
-import { CONNECT_DATABASE, CLOSE_DATABASE } from "~/config/mongodb";
+import { CONNECT_DATABASE, CLOSE_DATABASE } from "./config/MongoDB.js";
 import exitHook from "async-exit-hook";
-import { env } from "~/config/environment";
+import { env } from "./config/environment.js";
 import cors from "cors";
-import { APIs_V1 } from "~/routes/v1/index";
-import { oAuth2Router } from "~/routes/v1/oAuth2Routes";
-import { notFound, errorHandler } from "~/middleware/errorHandlingMiddleware";
+import { APIs_V1 } from "./routes/v1/index.js";
+import { oAuth2Router } from "./routes/v1/oAuth2Routes.js";
+import { notFound, errorHandler } from "./middleware/errorHandlingMiddleware.js";
 import morgan from "morgan";
 import cookieSession from "cookie-session";
 import path from "path";
-import passport from "~/middleware/passportMiddleware";
+import passport from "./middleware/passportMiddleware.js";
 
 const START_SERVER = () => {
   const app = express();

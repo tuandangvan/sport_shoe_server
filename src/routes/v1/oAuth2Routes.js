@@ -1,6 +1,6 @@
 import express from "express";
 import passport from "passport";
-import { env } from "~/config/environment";
+import { env } from "../../config/environment.js";
 
 const route = express.Router();
 

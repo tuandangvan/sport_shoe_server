@@ -1,14 +1,14 @@
 import express from "express";
 import { StatusCodes } from "http-status-codes";
-import { categoryRouter } from "~/routes/v1/categoryRoutes";
-import { contactRouter } from "~/routes/v1/contactRoutes";
-import { orderRouter } from "~/routes/v1/orderRoutes";
-import { productRouter } from "~/routes/v1/productRoutes";
-import { userRouter } from "~/routes/v1/userRoutes";
-import { brandRouter } from "~/routes/v1/brandRoutes";
-import { uploadRoute } from "~/routes/v1/uploadRoute";
-import ImportData from "~/config/importData";
-import { paymentRoute } from "./paymentRoutes";
+import { categoryRouter } from "../../routes/v1/categoryRoutes.js";
+import { contactRouter } from "../../routes/v1/contactRoutes.js";
+import { orderRouter } from "../../routes/v1/orderRoutes.js";
+import { productRouter } from "../../routes/v1/productRoutes.js";
+import { userRouter } from "../../routes/v1/userRoutes.js";
+import { brandRouter } from "../../routes/v1/brandRoutes.js";
+import { uploadRoute } from "../../routes/v1/uploadRoute.js";
+import ImportData from "../../config/importData.js";
+import { paymentRoute } from "./paymentRoutes.js";
 
 const router = express.Router();
 
