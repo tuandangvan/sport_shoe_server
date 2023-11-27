@@ -37,7 +37,7 @@ const userAuth = asyncHandler(async (req, res) => {
       accessToken: generateToken.generateAccessToken(user._id),
       refreshToken: generateToken.generateRefreshToken(user._id)
     });
-  } else if (user && user.status === "Peding") {
+  } else if (user && user.status === "Pending") {
     res.status(402);
     throw new Error("Account is not active yet");
   } else {
@@ -94,8 +94,9 @@ const userRegister = asyncHandler(async (req, res) => {
     name,
     email,
     password,
-    status: "Peding",
-    codeConfirmMail: token
+    status: "Pending",
+    codeConfirmMail: token,
+    expiredCodeConfirmMail: new Date(Date.now() + 10 * 60000)
   });
 
   if (user) {
@@ -296,7 +297,29 @@ const forgotPassword = asyncHandler(async (req, res) => {
       message: "An email has been sent"
     });
   }
-  
+});
+
+const activeAccount = asyncHandler(async (req, res) => {
+  const { token, email } = req.query;
+  const user = await User.findOne({ email });
+  if (!user) {
+    res.status(404);
+    throw new Error("Email Not Found");
+  }
+  if (user.codeConfirmMail === token && user.status === "Pending") {
+    if (user.expiredCodeConfirmMail < Date.now()) {
+      res.status(304);
+      throw new Error("Token is expired !");
+    }
+    user.status = "Active";
+    await user.save();
+    res.status(200).json({
+      message: "Account actived successfully !"
+    });
+  } else {
+    res.status(407);
+    throw new Error("Token is not correct !");
+  }
 });
 
 export const userController = {
@@ -309,5 +332,6 @@ export const userController = {
   getAllUsers,
   getAllUsersByAdmin,
   updateAvatar,
-  forgotPassword
+  forgotPassword,
+  activeAccount
 };

@@ -5,15 +5,17 @@ import exitHook from "async-exit-hook";
 import { env } from "~/config/environment";
 import cors from "cors";
 import { APIs_V1 } from "~/routes/v1/index";
+import { oAuth2Router } from "~/routes/v1/oAuth2Routes";
 import { notFound, errorHandler } from "~/middleware/errorHandlingMiddleware";
 import morgan from "morgan";
 import cookieSession from "cookie-session";
-import passport from "passport";
 import path from "path";
-import "dotenv/config";
+import passport from "~/middleware/passportMiddleware";
 
 const START_SERVER = () => {
   const app = express();
+
+  // app.use(passportMiddleware);
 
   // Enable req.body json data
   app.use(express.json());
@@ -24,11 +26,11 @@ const START_SERVER = () => {
   );
 
   const allowedDomains = [
-    process.env.CLIENT_URL_VERCEL,
-    process.env.ADMIN_URL_VERCEL,
-    process.env.CLIENT_URL,
-    process.env.ADMIN_URL,
-    process.env.ADMIN_FIAU_URL
+    env.CLIENT_URL_VERCEL,
+    env.ADMIN_URL_VERCEL,
+    env.CLIENT_URL,
+    env.ADMIN_URL,
+    env.ADMIN_FIAU_URL
   ];
 
   app.use(
@@ -50,7 +52,7 @@ const START_SERVER = () => {
   app.use(
     cookieSession({
       name: "session",
-      keys: [process.env.COOKIE_SESSION_KEYS],
+      keys: [env.COOKIE_SESSION_KEYS],
       maxAge: 24 * 60 * 80 * 1000
     })
   );
@@ -62,6 +64,7 @@ const START_SERVER = () => {
 
   //Use APIs v1
   app.use("/api/v1", APIs_V1);
+  app.use("/auth", oAuth2Router);
 
   // Middleware xử lý lỗi tập trung
   app.use(notFound);
@@ -69,7 +72,7 @@ const START_SERVER = () => {
 
   app.use(morgan("combined"));
   app.get("/api/config/paypal", (req, res) => {
-    res.send(process.env.PAYPAL_CLIENT_ID);
+    res.send(env.PAYPAL_CLIENT_ID);
   });
 
   const PORT = env.APP_PORT || 1000;
