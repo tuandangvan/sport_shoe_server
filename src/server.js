@@ -25,6 +25,7 @@ const START_SERVER = () => {
     })
   );
 
+    //cors url
   const allowedDomains = [
     env.CLIENT_URL_VERCEL,
     env.ADMIN_URL_VERCEL,
