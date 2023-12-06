@@ -27,7 +27,7 @@ const sendMailTemplate = (options) => {
 };
 
 const sendConfirmMail = ({ email, message }) => {
-  const linkRequest = `http://localhost:3000/active_account/?email=${email}&token=${message}`;
+  const linkRequest = `${env.CLIENT_URL_VERCEL}/active_account/?email=${email}&token=${message}`;
   const options = {
     from: `🛍️ Sport Shoe Shop`,
     to: email,
