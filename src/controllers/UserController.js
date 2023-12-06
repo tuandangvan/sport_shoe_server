@@ -98,6 +98,7 @@ const userRegister = asyncHandler(async (req, res) => {
     codeConfirmMail: token,
     expiredCodeConfirmMail: new Date(Date.now() + 10 * 60000)
   });
+  console.log(user);
 
   if (user) {
     emailSender.sendConfirmMail({ email, message: token });

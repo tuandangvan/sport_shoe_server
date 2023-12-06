@@ -264,7 +264,9 @@ const getSingleProduct = asyncHandler(async (req, res) => {
       user: decodeToken.id,
       "orderItems.product": product.id
     });
-    if (order) allowReview = true;
+    if (order) {
+      if (order.status == 3) allowReview = true;
+    }
   }
 
   const typeProduct = handlerTypeProduct2(product);

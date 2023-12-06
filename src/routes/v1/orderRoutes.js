@@ -29,7 +29,6 @@ route.put("/:id/pay", authMiddleware.protect, orderController.updateOrderPaid);
 route.put(
   "/change-status",
   authMiddleware.protect,
-  authMiddleware.admin,
   orderController.updateStatusOrder
 );
 
