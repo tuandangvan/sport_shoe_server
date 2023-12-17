@@ -27,11 +27,12 @@ const START_SERVER = () => {
 
     //cors url
   const allowedDomains = [
-    env.CLIENT_URL_VERCEL,
+    env.HOSTING,
     env.ADMIN_URL_VERCEL,
     env.CLIENT_URL,
     env.ADMIN_URL,
-    env.ADMIN_FIAU_URL
+    env.ADMIN_FIAU_URL,
+    env.CLIENT_URL_AWS
   ];
 
   app.use(
